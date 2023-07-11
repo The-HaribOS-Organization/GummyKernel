@@ -1,7 +1,10 @@
+# User defined variables
+GNU-EFI_LOCALIZATION = ../gnu-efi
+
 # Compilers & Linker
 CXX = clang
-CXXFLAGS = -target x86_64-unknown-windows -nostdlib -ffreestanding -fshort-wchar -mno-red-zone
-INCLUDE_HEADERS = -I include
+CXXFLAGS = -Wextra -Wall -target x86_64-unknown-windows -ffreestanding -fshort-wchar -mno-red-zone
+INCLUDE_HEADERS = -I include -I $(GNU-EFI_LOCALIZATION)/inc/ -I $(GNU-EFI_LOCALIZATION)/inc/x86_64 -I $(GNU-EFI_LOCALIZATION)/inc/protocol
 
 LD = ld
 LDFILE = kernel.ld 
