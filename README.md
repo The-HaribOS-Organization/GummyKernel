@@ -1,0 +1,2 @@
+# Kernel
+The HaribOS kernel
