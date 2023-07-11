@@ -11,6 +11,8 @@ void *memcpy(void *dest, const void *src, size_t n)
     {
         ((uint8_t *)dest)[i] = ((uint8_t *)src)[i];
     }
+
+    return dest;
 }
 
 void *memmove(void *dest, const void *src, size_t n)
@@ -57,7 +59,7 @@ void *memchr(const void *str, int c, size_t n)
     {
         if(((int *)str)[i] == c)
         {
-            return (str + i);
+            return (void*)str + i;
         }
     }
 
