@@ -1,3 +1,6 @@
-int _start() {
-  return 0;
+void kernel_main(void)
+{
+    // Kernel code here
+
+    for(;;);
 }
