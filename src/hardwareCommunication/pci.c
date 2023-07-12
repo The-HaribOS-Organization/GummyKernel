@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
-#include <pci/pci.h>
+
+#include "hardwareCommunication/pci.h"
 #include <io/cursor.h>
 #include <libs/stdio.h>
 #include <video/vga_text.h>

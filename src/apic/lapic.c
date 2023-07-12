@@ -1,15 +1,23 @@
-#include <io/lapic.h>
-#include <stdint.h>
-#include <cpuid.h>
-#include <cpu_infos.h>
-#include <io/msr.h>
-#include <libs/stdio.h>
-#include <video/vga_text.h>
+#include "apic/lapic.h"
 
+void apic_enable()
+{
+    //printf("[+]: Activation du APIC.\n");
 
-uintptr_t get_apic_base() {
+    uintptr_t base = apic_getBase();
+    set_apic_base(base);
 
-    uint32_t eax, edx;
+    lapic_write_register(LAPIC_BASE_ADDRESS, LAPIC_SPURIOUS_IV_REGISTER, (lapic_read_register(LAPIC_BASE_ADDRESS, LAPIC_SPURIOUS_IV_REGISTER) | 0x100));
+
+    //terminal_setcolor(VGA_GREEN);
+    //printf("[+]: APIC active.\n");
+    //terminal_setcolor(VGA_WHITE);
+}
+
+uintptr_t apic_getBase()
+{
+    uint32_t eax;
+    uint32_t edx;
     getMSR(IA32_APIC_BASE_MSR, &eax, &edx);
 
 #ifdef __PHYSICAL_MEMORY_EXTENSION__
@@ -19,18 +27,8 @@ uintptr_t get_apic_base() {
 #endif
 }
 
-void lapic_write_register(uint32_t lapic_base, uint32_t lregister, uint32_t value) {
-
-    *(volatile uint32_t *)(lapic_base + lregister) = value;
-}
-
-uint32_t lapic_read_register(uint32_t lapic_base, uint32_t lregister) {
-
-    return *(volatile uint32_t *)(lapic_base + lregister);
-}
-
-void set_apic_base(uintptr_t apic) {
-
+void apic_setBase(uintptr_t apic)
+{
     uint32_t edx = 0;
     uint32_t eax = (apic & 0xFFFFF000) | IA32_APIC_BASE_MSR_ENABLE;
 
@@ -41,21 +39,12 @@ void set_apic_base(uintptr_t apic) {
     setMSR(IA32_APIC_BASE_MSR, eax, edx);
 }
 
-void enable_apic() {
-
-    printf("[+]: Activation du APIC.\n");
-
-    uintptr_t base = get_apic_base();
-    set_apic_base(base);
-
-    lapic_write_register(LAPIC_BASE_ADDRESS, LAPIC_SPURIOUS_IV_REGISTER, (lapic_read_register(LAPIC_BASE_ADDRESS, LAPIC_SPURIOUS_IV_REGISTER) | 0x100));
-
-    terminal_setcolor(VGA_GREEN);
-    printf("[+]: APIC active.\n");
-    terminal_setcolor(VGA_WHITE);
+uint32_t lapic_readRegister(uint32_t lapic_base, uint32_t lregister)
+{
+    return *(volatile uint32_t *)(lapic_base + lregister);
 }
 
-void lapic_eoi() {
-
-    lapic_write_register(LAPIC_BASE_ADDRESS, LAPIC_EOI_REGISTER, 0x0);
+void lapic_writeRegister(uint32_t lapic_base, uint32_t lregister, uint32_t value)
+{
+    *(volatile uint32_t *)(lapic_base + lregister) = value;
 }

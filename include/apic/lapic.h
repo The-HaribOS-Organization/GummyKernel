@@ -2,11 +2,17 @@
 les prototypes de fonctions nécessaires à l'utilisation
 du APIC locale.*/
 
-#ifndef _LAPIC_
-#define _LAPIC_
+#ifndef KERNEL_LAPIC_H_INCLUDED
+#define KERNEL_LAPIC_H_INCLUDED
 
+// #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <cpuid.h>
+
+/////////////////////////
+//  Constants & types  //
+/////////////////////////
 
 #define LAPIC_BASE_ADDRESS 0xFEE00000
 #define LAPIC_ID_REGISTER 0x20
@@ -27,11 +33,16 @@ du APIC locale.*/
 #define IA32_APIC_BASE_MSR_BSP 0x100
 #define IA32_APIC_BASE_MSR_ENABLE 0x800
 
+/////////////////
+//  Functions  //
+/////////////////
 
-uintptr_t get_apic_base();
-uint32_t lapic_read_register(uint32_t lapic_base, uint32_t lregister);
-void lapic_write_register(uint32_t lapic_base, uint32_t lregister, uint32_t value);
-void set_apic_base(uintptr_t apic);
-void enable_apic();
+void apic_enable();
 
-#endif
+uintptr_t apic_getBase();
+void apic_setBase(uintptr_t apic);
+
+uint32_t lapic_readRegister(uint32_t lapic_base, uint32_t lregister);
+void lapic_writeRegister(uint32_t lapic_base, uint32_t lregister, uint32_t value);
+
+#endif // KERNEL_LAPIC_H_INCLUDED

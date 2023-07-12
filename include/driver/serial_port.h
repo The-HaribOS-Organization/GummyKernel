@@ -4,9 +4,16 @@
 #ifndef _SERIAL_PORT_
 #define _SERIAL_PORT_
 
+// #include <stdio.h>
+// #include <string.h>
 #include <stdint.h>
+#include <stddef.h>
 
-enum serial_ports {
+/////////////////////////
+//  Constants & types  //
+/////////////////////////
+
+typedef enum {
     SERIAL_COM1_PORT = 0x3F8,
     SERIAL_COM2_PORT = 0x2F8,
     SERIAL_COM3_PORT = 0x3E8,
@@ -15,7 +22,7 @@ enum serial_ports {
     SERIAL_COM6_PORT = 0x4F8,
     SERIAL_COM7_PORT = 0x5E8,
     SERIAL_COM8_PORT = 0x4E8
-};
+} SerialPorts;
 
 #define SERIAL_COM_PORT(base) (base)
 #define SERIAL_ACTIVATION_INTERRUPT(base) (base+1)
@@ -28,12 +35,16 @@ enum serial_ports {
 
 #define SERIAL_LINE_ENABLE_DLAB 0x80
 
-void set_bauds_speed_rate(
-    uint16_t com, uint16_t divisor);
+/////////////////
+//  Functions  //
+/////////////////
 
-void configure_line(unsigned short com);
-uint8_t check_if_fifo_empty(uint16_t com);
-uint16_t check_if_received_ok(uint16_t com);
+void serial_setBaudsSpeedRate(uint16_t com, uint16_t divisor);
+void serial_configureLine(uint16_t com);
+
+uint8_t serial_isFIFOEmpty(uint16_t com);
+uint16_t serial_isRecieved(uint16_t com);
+
 char serial_read(uint16_t com);
 
 void serial_putchar(unsigned char character, uint16_t com);
