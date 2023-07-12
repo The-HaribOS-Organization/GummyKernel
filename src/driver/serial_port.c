@@ -32,6 +32,8 @@ char serial_read(uint16_t com) {
 
 void serial_putchar(unsigned char character, uint16_t com) {
     while (check_if_fifo_empty(com) == 0);
+    if(character == '\n')
+        outb(com, '\r');
     outb(com, character);
 }
 
