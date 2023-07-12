@@ -2,13 +2,20 @@
 prototypes de fonctions nécessaires à l'utilisation
 du sound blaster afin de jouer des sons sur l'ordinateur.*/
 
-#ifndef _SOUND_BLASTER_
-#define _SOUND_BLASTER_
+#ifndef KERNEL_SOUND_BLASTER_H_INCLUDED
+#define KERNEL_SOUND_BLASTER_H_INCLUDED
 
+// #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 
-enum sound_blaster_ports {
+#include "hardwareCommunication/io.h"
+
+/////////////////////////
+//  Constants & types  //
+/////////////////////////
+
+typedef enum {
 	DSP_MIXER_PORT = 0x224,
 	DSP_MIXER_DATA_PORT = 0x225,
 	DSP_RESET_PORT = 0x226,
@@ -16,9 +23,9 @@ enum sound_blaster_ports {
 	DSP_WRITE_PORT = 0x22C,
 	DSP_READ_STATUS_PORT = 0x22E,
 	DSP_ACK_PORT = 0x22F
-};
+} SoundBlasterPorts;
 
-enum dsp_write_port_command {
+typedef enum {
 	SET_TIME_CONSTANT = 0x40,
 	SET_OUTPUT_SAMPLE_RATE = 0x41,
 	TURN_SPEAKER_ON = 0xD1,
@@ -28,17 +35,22 @@ enum dsp_write_port_command {
 	STOP_PLAYING_16_BITS_CHANNEL = 0xD5,
 	RESUME_PLAYING_16_BITS_CHANNEL = 0xD6,
 	GET_DSP_VERSION = 0xE1
-};
+} DSPWritePortCommand;
 
-enum dsp_mixer_port_command {
+typedef enum {
 	MASTER_VOLUME = 0x22,
 	SET_IRQ = 0x80
-};
+} DSPMixerPortCommand;
 
-void init_sound_blaster();
-void turn_on_speaker();
-void turn_off_speaker();
-uint8_t set_volume(uint8_t left, uint8_t right);
-void set_irq(uint8_t irq_number);
+/////////////////
+//  Functions  //
+/////////////////
 
-#endif
+void soundBlaster_init();
+void soundBlaster_turnOn();
+void soundBlaster_turnOff();
+
+uint8_t soundBlaster_setVolume(uint8_t left, uint8_t right);
+void soundBlaster_setIrq(uint8_t irq_number);
+
+#endif // KERNEL_SOUND_BLASTER_H_INCLUDED

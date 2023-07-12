@@ -1,13 +1,18 @@
 /* Contient tous le prototypes de fonctions
 ainsi que les macros nécéssaires à l'utilisation du PIC.*/
 
-#ifndef _PIC_
-#define _PIC_
+#ifndef KERNEL_PIC_H_INCLUDED
+#define KERNEL_PIC_H_INCLUDED
 
+// #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include <idt/irq/irq.h>
 
+#include "hardwareCommunication/io.h"
+
+/////////////////////////
+//  Constants & types  //
+/////////////////////////
 
 #define PIC1_COMMAND 0x20
 #define PIC2_COMMAND 0xA0
@@ -29,11 +34,17 @@ ainsi que les macros nécéssaires à l'utilisation du PIC.*/
 #define ICW4_BUF_MASTER 0x0C
 #define ICW4_SFNM 0x10
 
-void PICremap(uint8_t offset_master, uint8_t offset_slave);
-bool disable_PIC();
-bool enable_PIC();
-bool mask_IRQ(uint8_t irq);
-bool unmask_IRQ(uint8_t irq);
+/////////////////
+//  Functions  //
+/////////////////
+
+bool PIC_enable();
+bool PIC_disable();
+
+void PIC_remap(uint8_t offset_master, uint8_t offset_slave);
 void PIC_endOfInterrupt(uint8_t interrupt);
 
-#endif
+bool IRQ_mask(uint8_t irq);
+bool IRQ_unmask(uint8_t irq);
+
+#endif // KERNEL_PIC_H_INCLUDED

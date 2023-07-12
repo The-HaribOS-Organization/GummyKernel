@@ -1,12 +1,18 @@
 /* Ce fichier contient les fonctions nécessaires
 à l'utilisation du haut-parleur */
 
-#ifndef _PC_SPEAKER_
-#define _PC_SPEAKER_
+#ifndef KERNEL_PC_SPEAKER_H_INCLUDED
+#define KERNEL_PC_SPEAKER_H_INCLUDED
 
 #include <stdint.h>
 
-void make_beep(uint32_t frequency);
-void shutup();
+#include "driver/timer.h"
 
-#endif
+/////////////////
+//  Functions  //
+/////////////////
+
+void pcBeeper_makeBeep(uint32_t frequency);
+void pcBeeper_shutup();
+
+#endif // KERNEL_PC_SPEAKER_H_INCLUDED

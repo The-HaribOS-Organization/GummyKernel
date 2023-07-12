@@ -4,24 +4,31 @@ On récupère le code de la touche pressé et on regarde à quel caractère ASCI
 ce code utilise un clavier QWERTY. Il faudra donc l'adapter afin de pouvoir l'utiliser sur un clavier AZERTY
 */
 
-#ifndef _KEYBOARD_
-#define _KEYBOARD_
+#ifndef KERNEL_KEYBOARD_H_INCLUDED
+#define KERNEL_KEYBOARD_H_INCLUDED
 
+// #include <stdio.h>
 #include <stdint.h>
-#include <idt/irq/irq.h>
+#include <stdbool.h>
 
+#include "apic/pic.h"
+#include "driver/serial_port.h"
 
-enum keyboard_encoder_io {
+/////////////////////////
+//  Constants & types  //
+/////////////////////////
+
+typedef enum {
     KEYBOARD_ENCODER_READ_INPUT_BUFFER = 0x60,
     KEYBOARD_ENCODER_SEND_COMMAND = 0x60
-};
+} KeyboardEncoderIO;
 
-enum keyboard_controller_io {
+typedef enum {
     KEYBOARD_CONTROLLER_READ = 0x64,
     KEYBOARD_CONTROLLER_WRITE = 0x64
-};
+} KeyboardControllerIO;
 
-enum keyboard_controller_stats {
+typedef enum {
     KEYBOARD_OUTPUT_BUFFER_STAT = 0x01,
     KEYBOARD_INPUT_BUFFER_STAT = 0x02,
     KEYBOARD_SYSTEM_FLAG = 0x04,
@@ -30,9 +37,9 @@ enum keyboard_controller_stats {
     KEYBOARD_AUX_OUTPUT_BUFFER_FULL = 0x20,
     KEYBOARD_TIMEOUT = 0x40,
     KEYBOARD_PARITY_ERROR = 0x80
-};
+} KeyboardControllerStats;
 
-enum keyboard_encoder_command {
+typedef enum {
     KEYBOARD_SET_LED = 0xED,
     KEYBOARD_ECHO_COMMAND = 0xEE,
     KEYBOARD_SET_ATLERNATE_SCAN_CODE = 0xF0,
@@ -50,23 +57,23 @@ enum keyboard_encoder_command {
     KEYBOARD_SET_SINGLE_KEY_BREAK = 0xFD,
     KEYBOARD_RESEND_LAST_RESULT = 0xFE,
     KEYBOARD_RESET_KEYBOARD = 0xFF
-};
+} KeyboardEncoderCommand;
 
-enum keyboard_scan_code {
+typedef enum {
     KEYBOARD_SCANCODE_1 = 0x02,
     KEYBOARD_SCANCODE_2 = 0x04,
     KEYBOARD_SCANCODE_4 = 0x08
-};
+} KeyboardScanCode;
 
-enum keyboard_return_codes {
+typedef enum {
     KEYBOARD_LEFT_SHIFT_MAKE_CODE = 0xAA,
     KEYBOARD_ECHO_COMMAND_RESULT = 0xEE,
     KEYBOARD_ACK_COMMAND = 0xFA,
     KEYBOARD_RESEND_LAST_COMMAND = 0xFE,
     KEYBOARD_ERROR = 0xFF
-};
+} KeyboardReturnCodes;
 
-enum keyboard_controller_command {
+typedef enum {
     KEYBOARD_READ_COMMAND_BYTE = 0x20,
     KEYBOARD_WRITE_COMMAND_BYTE = 0x60,
     KEYBOARD_SELF_TEST = 0xAA,
@@ -82,16 +89,20 @@ enum keyboard_controller_command {
     KEYBOARD_ENABLE_MOUSE_PORT = 0xA8,
     KEYBOARD_TEST_MOUSE_PORT = 0xA9,
     KEYBOARD_WRITE_TO_MOUSE = 0xD4
-};
+} KeyboardControllerCommand;
 
-void init_keyboard();
-uint8_t get_keyboard_status();
-uint8_t keyboard_enc_read_buffer();
-void send_command(uint8_t command);
-char *get_ascii_char(uint8_t scancode);
-uint8_t keyboard_interface_test();
+/////////////////
+//  Functions  //
+/////////////////
+
 uint8_t enable_keyboard();
 uint8_t disable_keyboard();
-int8_t set_scan_code(uint8_t scancode);
 
-#endif
+void keyboard_init();
+uint8_t keyboard_getStatus();
+uint8_t keyboard_EncReadBuffer();
+void keyboard_sendCommand(uint8_t command);
+char *keyboard_getAsciiWithScancode(uint8_t scancode);
+int8_t keyboard_setScanCode(uint8_t scancode);
+
+#endif // KERNEL_KEYBOARD_H_INCLUDED
