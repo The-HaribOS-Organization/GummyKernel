@@ -8,6 +8,8 @@ ainsi que les macros nécéssaires à l'utilisation du PIC.*/
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "hardwareCommunication/io.h"
+
 /////////////////////////
 //  Constants & types  //
 /////////////////////////

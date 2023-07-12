@@ -1,15 +1,9 @@
-#include <sound/sound_blaster.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <io/cursor.h>
-#include <libs/stdio.h>
-#include <video/vga_text.h>
+#include "driver/sound_blaster.h"
 
-
-static void program_dma(uint8_t bit_transfert) {
-
-    if (bit_transfert == 8) {
-
+static void programDMA(uint8_t bit_transfert)
+{
+    if (bit_transfert == 8)
+    {
         outb(0x0A, 0x05);
         outb(0x0C, 0x01);
         outb(0x0B, 0x49);
@@ -19,8 +13,9 @@ static void program_dma(uint8_t bit_transfert) {
         outb(0x03, 0xFF);
         outb(0x03, 0x0F);
         outb(0x0A, 0x01);
-    } else if (bit_transfert == 16) {
-
+    }
+    else if (bit_transfert == 16)
+    {
         outb(0xD4, 0x05);
         outb(0xD8, 0x01);
         outb(0xD6, 0x49);
@@ -33,38 +28,38 @@ static void program_dma(uint8_t bit_transfert) {
     }
 }
 
-static bool reset_dsp() {
-    
+static bool resetDSP()
+{
     outb(DSP_RESET_PORT, 0x1);
-	io_wait();
-	outb(DSP_RESET_PORT, 0x0);
+    io_wait();
+    outb(DSP_RESET_PORT, 0x0);
 
-	if (inb(DSP_READ_PORT) == 0xAA)
-		return true;
-	else
-		return false;
+    return (inb(DSP_READ_PORT) == 0xAA);
 }
 
+void init_sound_blaster()
+{
+    // terminal_setcolor(VGA_WHITE);
+    // printf("[+]: Configuration du sound blaster.\n");
 
-void init_sound_blaster() {
-
-    terminal_setcolor(VGA_WHITE);
-    printf("[+]: Configuration du sound blaster.\n");
-
-    bool dsp_reset = reset_dsp();
-    if (dsp_reset) {
-        terminal_setcolor(VGA_GREEN);
-        printf("[+]: Le DSP est reinitialise.\n");
-        terminal_setcolor(VGA_WHITE);
-    } else {
-        terminal_setcolor(VGA_RED);
-        printf("[+]: Le DSP n'a pas ete reinitialise.\n");
-        terminal_setcolor(VGA_WHITE);
+    bool dsp_reset = resetDSP();
+    if (dsp_reset)
+    {
+        // terminal_setcolor(VGA_GREEN);
+        // printf("[+]: Le DSP est reinitialise.\n");
+        // terminal_setcolor(VGA_WHITE);
+    }
+    else
+    {
+        // terminal_setcolor(VGA_RED);
+        // printf("[+]: Le DSP n'a pas ete reinitialise.\n");
+        // terminal_setcolor(VGA_WHITE);
     }
 
-    set_volume(0xC, 0xC);
-    turn_on_speaker();
-    program_dma(0x08);
+    soundBlaster_setVolume(0xC, 0xC);
+    soundBlaster_turnOn();
+    
+    programDMA(0x08);
 
     outb(DSP_WRITE_PORT, 0x40);
     outb(DSP_WRITE_PORT, 165);
@@ -74,24 +69,26 @@ void init_sound_blaster() {
     outb(DSP_WRITE_PORT, 0x0F);
 }
 
-void turn_on_speaker() {
-	outb(DSP_WRITE_PORT, TURN_SPEAKER_ON);
+void soundBlaster_turnOn()
+{
+    outb(DSP_WRITE_PORT, TURN_SPEAKER_ON);
 }
 
-void turn_off_speaker() {
-	outb(DSP_WRITE_PORT, TURN_SPEAKER_OFF);
+void soundBlaster_turnOff()
+{
+    outb(DSP_WRITE_PORT, TURN_SPEAKER_OFF);
 }
 
-uint8_t set_volume(uint8_t left, uint8_t right) {
+uint8_t soundBlaster_setVolume(uint8_t left, uint8_t right)
+{
+    outb(DSP_MIXER_PORT, MASTER_VOLUME);
+    outb(MASTER_VOLUME, left | right);
 
-	outb(DSP_MIXER_PORT, MASTER_VOLUME);
-	outb(MASTER_VOLUME, left | right);
-
-	return left | right;
+    return left | right;
 }
 
-void set_irq(uint8_t irq_number) {
-
-	outb(DSP_MIXER_PORT, 0x80);
-	outb(DSP_MIXER_DATA_PORT, irq_number);
+void soundBlaster_setIrq(uint8_t irq_number)
+{
+    outb(DSP_MIXER_PORT, 0x80);
+    outb(DSP_MIXER_DATA_PORT, irq_number);
 }

@@ -1,13 +1,15 @@
 /* Le fichier contient toutes les fonctions nécessaires
 à l'envoie de donnée en sortie sur le port série.
 */
-#ifndef _SERIAL_PORT_
-#define _SERIAL_PORT_
+#ifndef KERNEL_SERIAL_PORT_H_INCLUDED
+#define KERNEL_SERIAL_PORT_H_INCLUDED
 
 // #include <stdio.h>
 // #include <string.h>
 #include <stdint.h>
 #include <stddef.h>
+
+#include "hardwareCommunication/io.h"
 
 /////////////////////////
 //  Constants & types  //
@@ -50,4 +52,4 @@ char serial_read(uint16_t com);
 void serial_putchar(unsigned char character, uint16_t com);
 void serial_print(const char *string, uint16_t com);
 
-#endif
+#endif // KERNEL_SOUND_BLASTER_H_INCLUDED

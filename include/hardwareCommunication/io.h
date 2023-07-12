@@ -1,13 +1,23 @@
-#ifndef INCLUDE_CURSOR
-#define INCLUDE_CURSOR
+#ifndef KERNEL_IO_H_INCLUDED
+#define KERNEL_IO_H_INCLUDED
+
+#include <stdint.h>
+
+/////////////////////////
+//  Constants & types  //
+/////////////////////////
 
 #define FB_COMMAND_PORT 0x3D4
 #define FB_DATA_PORT 0x3D5
 #define FB_HIGH_BYTE 14
 #define FB_LOW_BYTE 15
 
-extern void outb(unsigned short port, unsigned char data);
-extern uint8_t inb(unsigned short port);
-extern void io_wait();
+/////////////////
+//  Functions  //
+/////////////////
 
-#endif
+void outb(unsigned short port, unsigned char data);
+uint8_t inb(unsigned short port);
+void io_wait();
+
+#endif // KERNEL_IO_H_INCLUDED

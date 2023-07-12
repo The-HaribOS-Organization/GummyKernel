@@ -12,6 +12,7 @@ ce code utilise un clavier QWERTY. Il faudra donc l'adapter afin de pouvoir l'ut
 #include <stdbool.h>
 
 #include "apic/pic.h"
+#include "driver/serial_port.h"
 
 /////////////////////////
 //  Constants & types  //

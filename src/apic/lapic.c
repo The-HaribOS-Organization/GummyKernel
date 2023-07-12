@@ -5,9 +5,9 @@ void apic_enable()
     //printf("[+]: Activation du APIC.\n");
 
     uintptr_t base = apic_getBase();
-    set_apic_base(base);
+    apic_setBase(base);
 
-    lapic_write_register(LAPIC_BASE_ADDRESS, LAPIC_SPURIOUS_IV_REGISTER, (lapic_read_register(LAPIC_BASE_ADDRESS, LAPIC_SPURIOUS_IV_REGISTER) | 0x100));
+    lapic_writeRegister(LAPIC_BASE_ADDRESS, LAPIC_SPURIOUS_IV_REGISTER, (lapic_readRegister(LAPIC_BASE_ADDRESS, LAPIC_SPURIOUS_IV_REGISTER) | 0x100));
 
     //terminal_setcolor(VGA_GREEN);
     //printf("[+]: APIC active.\n");
@@ -18,6 +18,7 @@ uintptr_t apic_getBase()
 {
     uint32_t eax;
     uint32_t edx;
+
     getMSR(IA32_APIC_BASE_MSR, &eax, &edx);
 
 #ifdef __PHYSICAL_MEMORY_EXTENSION__
@@ -41,10 +42,10 @@ void apic_setBase(uintptr_t apic)
 
 uint32_t lapic_readRegister(uint32_t lapic_base, uint32_t lregister)
 {
-    return *(volatile uint32_t *)(lapic_base + lregister);
+    return *(volatile uint32_t*)((uintptr_t)lapic_base + lregister);
 }
 
 void lapic_writeRegister(uint32_t lapic_base, uint32_t lregister, uint32_t value)
 {
-    *(volatile uint32_t *)(lapic_base + lregister) = value;
+    *(volatile uint32_t*)((uintptr_t)lapic_base + lregister) = value;
 }

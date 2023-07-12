@@ -9,6 +9,8 @@
 // #include <stdio.h>
 #include <stdint.h>
 
+#include "hardwareCommunication/io.h"
+
 /////////////////////////
 //  Constants & types  //
 /////////////////////////

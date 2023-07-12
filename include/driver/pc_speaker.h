@@ -6,6 +6,8 @@
 
 #include <stdint.h>
 
+#include "driver/timer.h"
+
 /////////////////
 //  Functions  //
 /////////////////

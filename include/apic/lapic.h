@@ -10,6 +10,8 @@ du APIC locale.*/
 #include <stdbool.h>
 #include <cpuid.h>
 
+#include "hardwareCommunication/msr.h"
+
 /////////////////////////
 //  Constants & types  //
 /////////////////////////

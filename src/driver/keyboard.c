@@ -17,17 +17,18 @@ char *characters[] =
 
 static uint8_t keyboard_interfaceTest()
 {
-    keyboard_sendCommand(keyboard_interfaceTest);
+    keyboard_sendCommand(KEYBOARD_INTERFACE_TEST);
     return keyboard_EncReadBuffer();
 }
 
+// TODO
 static void keyboard_callback(/* registers_t *regs */)
 {
     if (keyboard_getStatus() & KEYBOARD_OUTPUT_BUFFER_STAT)
     {
         uint8_t code = keyboard_EncReadBuffer();
-        //serial_print("[+]: Touche pressé !!!!\n", SERIAL_COM1_PORT);
-        //serial_print(keyboard_getAsciiWithScancode(code), SERIAL_COM1_PORT);
+        serial_print("[+]: Touche pressé !!!!\n", SERIAL_COM1_PORT);
+        serial_print(keyboard_getAsciiWithScancode(code), SERIAL_COM1_PORT);
         //printf(keyboard_getAsciiWithScancode(code));
     }
 }
@@ -42,25 +43,26 @@ void keyboard_init()
     uint8_t interface_test_status = keyboard_interfaceTest();
     //terminal_setcolor(VGA_LIGHT_MAGENTA);
 
+    // TODO
     if (interface_test_status == 0)
     {
-        printf("[-]: Succes, aucune erreur.\n");
+        // printf("[-]: Succes, aucune erreur.\n");
     }
     else if (interface_test_status == 1)
     {
-        printf("[-]: La ligne d'horloge est bloque au niveau bas.\n");
+        // printf("[-]: La ligne d'horloge est bloque au niveau bas.\n");
     }
     else if (interface_test_status == 2)
     {
-        printf("[-]: La ligne d'horloge est bloque a un niveau eleve.\n");
+        // printf("[-]: La ligne d'horloge est bloque a un niveau eleve.\n");
     }
     else if (interface_test_status == 3)
     {
-        printf("[-]: La ligne d'horloge est bloque en haut.\n");
+        // printf("[-]: La ligne d'horloge est bloque en haut.\n");
     }
     else if (interface_test_status == 255)
     {
-        printf("[-]: Erreur generale.\n");
+        // printf("[-]: Erreur generale.\n");
     }
 
     scancodeSet = keyboard_setScanCode(KEYBOARD_SCANCODE_1);
@@ -77,16 +79,18 @@ void keyboard_init()
         // terminal_setcolor(VGA_WHITE);
     }
 
+    // TODO
+    (void)keyboard_callback; // Unused function
     // register_interrupt_handler(1, keyboard_callback);
 
     // terminal_setcolor(VGA_GREEN);
     // printf("[+]: Clavier PS/2 initialise.\n");
-    //terminal_setcolor(VGA_WHITE);
+    // terminal_setcolor(VGA_WHITE);
 }
 
 uint8_t keyboard_getStatus()
 {
-    // return inb(KEYBOARD_CONTROLLER_READ);
+    return inb(KEYBOARD_CONTROLLER_READ);
 }
 
 void keyboard_sendCommand(uint8_t command)
@@ -99,12 +103,12 @@ void keyboard_sendCommand(uint8_t command)
         }
     }
 
-    // outb(KEYBOARD_CONTROLLER_WRITE, command);
+    outb(KEYBOARD_CONTROLLER_WRITE, command);
 }
 
 uint8_t keyboard_EncReadBuffer()
 {
-    // return inb(KEYBOARD_ENCODER_READ_INPUT_BUFFER);
+    return inb(KEYBOARD_ENCODER_READ_INPUT_BUFFER);
 }
 
 char *keyboard_getAsciiWithScancode(uint8_t scancode)
@@ -136,10 +140,10 @@ uint8_t disable_keyboard()
 
 int8_t keyboard_setScanCode(uint8_t scancode)
 {
-    // outb(KEYBOARD_ENCODER_keyboard_sendCommand, KEYBOARD_SET_ATLERNATE_SCAN_CODE);
-    // outb(KEYBOARD_ENCODER_keyboard_sendCommand, scancode);
+    outb(KEYBOARD_ENCODER_SEND_COMMAND, KEYBOARD_SET_ATLERNATE_SCAN_CODE);
+    outb(KEYBOARD_ENCODER_SEND_COMMAND, scancode);
 
-    uint8_t result /* = inb(KEYBOARD_CONTROLLER_READ) */;
+    uint8_t result = inb(KEYBOARD_CONTROLLER_READ);
     if (result == KEYBOARD_ACK_COMMAND)
     {
         return scancode;
@@ -148,4 +152,5 @@ int8_t keyboard_setScanCode(uint8_t scancode)
     {
         return  -1;
     }
+    return 0;
 }
