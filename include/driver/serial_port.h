@@ -1,11 +1,13 @@
-/* Le fichier contient toutes les fonctions nécessaires
-à l'envoie de donnée en sortie sur le port série.
-*/
+/*
+    File    : serial_port.h
+    Utility : The serial port driver
+ */
+
 #ifndef KERNEL_SERIAL_PORT_H_INCLUDED
 #define KERNEL_SERIAL_PORT_H_INCLUDED
 
-// #include <stdio.h>
-// #include <string.h>
+#include <stdio.h>
+#include <string.h>
 #include <stdint.h>
 #include <stddef.h>
 

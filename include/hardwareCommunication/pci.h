@@ -1,12 +1,14 @@
-/* ce fichier contient tous les prototypes de fonction
-ainsi que les macros nécessaire à l'utilisation du PCI*/
+/*
+    File    : pci.h
+    Utility : The PCI driver
+ */
 
 #ifndef KERNEL_PCI_H_INCLUDED
 #define KERNEL_PCI_H_INCLUDED
 
+#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-// #include <stdio.h>
 
 #include "driver/serial_port.h"
 #include "hardwareCommunication/io.h"

@@ -157,25 +157,24 @@ static uint16_t pciConfigReadWord(uint16_t bus, uint16_t device, uint16_t functi
 
 void PCI_init()
 {
-    // printf("[+]: Detection des appareils utilisant le PCI.\n");
+    puts("[+]: Detection des appareils utilisant le PCI.\n");
     PCI_detect();
     // terminal_setcolor(VGA_LIGHT_MAGENTA);
-    // printf("[+]: liste des appareils disponibles.\n");
+    puts("[+]: liste des appareils disponibles.\n");
     // terminal_setcolor(VGA_BROWN);
 
     for (uint8_t i = 0; i < 2; i++)
     {
         PCIDeviceStruct pciCurrentStruct = pciDevices[i];
 
-        // TODO
         (void)pciCurrentStruct;
         (void)pciVendors; // Unused variable
-        // printf("[+]--> Vendeur: ");
-        // printf(pciVendors[pciCurrentStruct.vendorID]);
-        // printf("\n");
-        // printf("[+]--> Classe: ");
-        // printf(pciClass[pciCurrentStruct.baseClass]);
-        // printf("\n");
+        puts("[+]--> Vendeur: ");
+        puts(pciVendors[pciCurrentStruct.vendorID]);
+        puts("\n");
+        puts("[+]--> Classe: ");
+        puts(pciClass[pciCurrentStruct.baseClass]);
+        puts("\n");
     }
 
     // terminal_setcolor(VGA_WHITE);

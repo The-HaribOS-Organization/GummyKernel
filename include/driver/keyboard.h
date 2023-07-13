@@ -1,8 +1,7 @@
-/* Cet en-tête définie les fonctions utiles à l'affichage des caractères tapés à l'écran
-On récupère le code de la touche pressé et on regarde à quel caractère ASCII celle-ci correspond
-
-ce code utilise un clavier QWERTY. Il faudra donc l'adapter afin de pouvoir l'utiliser sur un clavier AZERTY
-*/
+/*
+    File    : keyboard.h
+    Utility : The keyboard driver
+ */
 
 #ifndef KERNEL_KEYBOARD_H_INCLUDED
 #define KERNEL_KEYBOARD_H_INCLUDED

@@ -1,5 +1,7 @@
-/* Contient tous le prototypes de fonctions
-ainsi que les macros nécéssaires à l'utilisation du PIC.*/
+/*
+    File    : pic.h
+    Utility : The PIC driver
+ */
 
 #ifndef KERNEL_PIC_H_INCLUDED
 #define KERNEL_PIC_H_INCLUDED

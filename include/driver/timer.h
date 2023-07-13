@@ -1,11 +1,15 @@
-/* Contient tous les prototypes de fonctions permettant
-d'initialiser le PIT.*/
+/*
+    File    : timer.h
+    Utility : The PIT driver
+ */
 
 #ifndef KERNEL_PIT_H_INCLUDED
 #define KERNEL_PIT_H_INCLUDED
 
-// #include <stdio.h>
+#include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
+
 #include "apic/pic.h"
 
 /////////////////////////

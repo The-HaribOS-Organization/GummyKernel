@@ -21,21 +21,20 @@ static uint8_t keyboard_interfaceTest()
     return keyboard_EncReadBuffer();
 }
 
-// TODO
-static void keyboard_callback(/* registers_t *regs */)
+// TODO IRQ
+static void keyboard_callback(/* registers_t *regs */) // implemented with IRQ
 {
     if (keyboard_getStatus() & KEYBOARD_OUTPUT_BUFFER_STAT)
     {
         uint8_t code = keyboard_EncReadBuffer();
         serial_print("[+]: Touche pressé !!!!\n", SERIAL_COM1_PORT);
         serial_print(keyboard_getAsciiWithScancode(code), SERIAL_COM1_PORT);
-        //printf(keyboard_getAsciiWithScancode(code));
     }
 }
 
 void keyboard_init()
 {
-    //printf("[+]: Initialisation du clavier PS/2.\n");
+    puts("[+]: Initialisation du clavier PS/2.\n");
 
     keyboard_sendCommand(KEYBOARD_WRITE_COMMAND_BYTE);
     keyboard_sendCommand(0x55);
@@ -43,48 +42,47 @@ void keyboard_init()
     uint8_t interface_test_status = keyboard_interfaceTest();
     //terminal_setcolor(VGA_LIGHT_MAGENTA);
 
-    // TODO
     if (interface_test_status == 0)
     {
-        // printf("[-]: Succes, aucune erreur.\n");
+        puts("[-]: Succes, aucune erreur.\n");
     }
     else if (interface_test_status == 1)
     {
-        // printf("[-]: La ligne d'horloge est bloque au niveau bas.\n");
+        puts("[-]: La ligne d'horloge est bloque au niveau bas.\n");
     }
     else if (interface_test_status == 2)
     {
-        // printf("[-]: La ligne d'horloge est bloque a un niveau eleve.\n");
+        puts("[-]: La ligne d'horloge est bloque a un niveau eleve.\n");
     }
     else if (interface_test_status == 3)
     {
-        // printf("[-]: La ligne d'horloge est bloque en haut.\n");
+        puts("[-]: La ligne d'horloge est bloque en haut.\n");
     }
     else if (interface_test_status == 255)
     {
-        // printf("[-]: Erreur generale.\n");
+        puts("[-]: Erreur generale.\n");
     }
 
     scancodeSet = keyboard_setScanCode(KEYBOARD_SCANCODE_1);
     if (scancodeSet == KEYBOARD_SCANCODE_1)
     {
         // terminal_setcolor(VGA_LIGHT_GREEN);
-        // printf("[+]: Scancode was set.\n");
+        puts("[+]: Scancode was set.\n");
         // terminal_setcolor(VGA_WHITE);
     }
     else
     {
         // terminal_setcolor(VGA_RED);
-        // printf("[+]: Scancode was not set.\n");
+        puts("[+]: Scancode was not set.\n");
         // terminal_setcolor(VGA_WHITE);
     }
 
-    // TODO
+    // TODO IRQ
     (void)keyboard_callback; // Unused function
     // register_interrupt_handler(1, keyboard_callback);
 
     // terminal_setcolor(VGA_GREEN);
-    // printf("[+]: Clavier PS/2 initialise.\n");
+    puts("[+]: Clavier PS/2 initialise.\n");
     // terminal_setcolor(VGA_WHITE);
 }
 

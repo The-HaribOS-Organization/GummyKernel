@@ -17,7 +17,7 @@ bool PIC_disable()
 
 void PIC_remap(uint8_t offset_master, uint8_t offset_slave)
 {
-    //printf("[+]: Remapping du PIC.\n");
+    puts("[+]: Remapping du PIC.\n");
 
     outb(PIC1_COMMAND, ICW1_INIT | ICW1_ICW4);
     io_wait();
@@ -40,7 +40,7 @@ void PIC_remap(uint8_t offset_master, uint8_t offset_slave)
     outb(PIC2_DATA, offset_slave);
 
     // terminal_setcolor(VGA_GREEN);
-    // printf("[+]: PIC remappe.\n");
+    puts("[+]: PIC remappe.\n");
     // terminal_setcolor(VGA_WHITE);
 }
 

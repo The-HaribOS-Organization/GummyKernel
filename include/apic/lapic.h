@@ -1,6 +1,7 @@
-/*Ce fichier contient toutes les macros ainsi que
-les prototypes de fonctions nécessaires à l'utilisation
-du APIC locale.*/
+/*
+    File    : lapic.h
+    Utility : The Local APIC driver
+ */
 
 #ifndef KERNEL_LAPIC_H_INCLUDED
 #define KERNEL_LAPIC_H_INCLUDED
@@ -8,6 +9,7 @@ du APIC locale.*/
 // #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
+
 #include <cpuid.h>
 
 #include "hardwareCommunication/msr.h"
