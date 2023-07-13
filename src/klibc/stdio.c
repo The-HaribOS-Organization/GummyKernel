@@ -3,6 +3,7 @@
 int putchar(int character)
 {
     serial_putchar(character, SERIAL_COM1_PORT); // TODO : Change to terminal
+    return character;
 }
 
 int puts(const char *string)
@@ -12,6 +13,7 @@ int puts(const char *string)
         putchar(*string);
         ++string;
     }
+    putchar('\n');
 
     return 1;
 }

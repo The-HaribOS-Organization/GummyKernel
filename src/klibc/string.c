@@ -120,4 +120,6 @@ char *strrev(char *str)
         str[i] = str[length - i - 1];
         str[length - i - 1] = tmp;
     }
+
+    return str;
 }

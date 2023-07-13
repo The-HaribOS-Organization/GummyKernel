@@ -1,6 +1,6 @@
 #include "driver/pc_speaker.h"
 
-void make_beep(uint32_t frequency)
+void pcBeeper_makeBeep(uint32_t frequency)
 {
     uint8_t div = 1193182 / frequency;
     outb(MODE_COMMAND_REGISTER, 0xB6);
@@ -14,7 +14,7 @@ void make_beep(uint32_t frequency)
     }
 }
 
-void shutup()
+void pcBeeper_shutup()
 {
     uint8_t tmp = inb(PIT_IO_PORT) & 0xFC;
     outb(PIT_IO_PORT, tmp);
