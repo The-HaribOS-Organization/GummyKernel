@@ -6,7 +6,7 @@
 #ifndef KERNEL_SOUND_BLASTER_H_INCLUDED
 #define KERNEL_SOUND_BLASTER_H_INCLUDED
 
-// #include <stdio.h>
+#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 

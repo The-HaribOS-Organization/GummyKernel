@@ -6,7 +6,7 @@
 #ifndef KERNEL_RTC_H_INCLUDED
 #define KERNEL_RTC_H_INCLUDED
 
-// #include <stdio.h>
+#include <stdio.h>
 #include <stdint.h>
 
 #include "hardwareCommunication/io.h"

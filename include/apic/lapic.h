@@ -6,7 +6,7 @@
 #ifndef KERNEL_LAPIC_H_INCLUDED
 #define KERNEL_LAPIC_H_INCLUDED
 
-// #include <stdio.h>
+#include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 

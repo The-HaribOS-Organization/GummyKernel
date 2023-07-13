@@ -8,7 +8,7 @@ static void pit_callback(/* registers_t *regs */)
     ++time;
     
     char timer[11]; // -> 2147483647 is the int32_t max
-    itoa(time, &timer, 10);
+    itoa(time, timer, 10);
     
     puts("[+]: Tic Tac: ");
     puts(timer);

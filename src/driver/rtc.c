@@ -14,7 +14,7 @@ void rtc_setup()
     // terminal_setcolor(VGA_WHITE);
 }
 
-uint8_t get_register_infos(uint8_t reg)
+uint8_t rtc_getRegisterInfos(uint8_t reg)
 {
     outb(RTC_REGISTER_NUMBER, reg);
     return inb(RTC_IO_PORT);
