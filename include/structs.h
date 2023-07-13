@@ -8,6 +8,19 @@
 #define GLOBAL_STRUCTS_H_INCLUDED
 
 ////////////////////////
+//  Global sturctures //
+////////////////////////
+
+// Contains the fields to use the graphics output protocol
+typedef struct {
+    uint32_t *frameBuffer;
+    size_t frameBufferSize;
+    uint32_t horizontalResolution;
+    uint32_t verticalResolution;
+    uint32_t pixelsPerScanLine;
+} EFIGOP;
+
+////////////////////////
 //  Maths structures  //
 ////////////////////////
 

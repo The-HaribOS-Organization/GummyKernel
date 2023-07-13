@@ -14,9 +14,6 @@ void serial_configureLine(uint16_t com)
 
 uint8_t serial_isFIFOEmpty(uint16_t com)
 {
-    /* Retourne 0 si la file FIFO n'est pas vide
-    Retourne 1 si la file FIFO est vide*/
-
     return inb(SERIAL_LINE_STATE(com)) & 0x20; 
 }
 
@@ -42,8 +39,7 @@ void serial_putchar(unsigned char character, uint16_t com)
 
 void serial_print(const char *string, uint16_t com)
 {
-    // TODO
-    uint16_t len = 0; // strlen(string)
+    uint16_t len = strlen(string);
     for (uint16_t i = 0; i < len; ++i)
     {
         serial_putchar(string[i], SERIAL_COM_PORT(com));

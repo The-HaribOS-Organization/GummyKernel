@@ -2,7 +2,7 @@
 
 void rtc_setup()
 {
-    // printf("[+]: Configuration du RTC.\n");
+    puts("[+]: Configuration du RTC.\n");
     
     DISABLE_INTERRUPT();
     outb(RTC_REGISTER_NUMBER, 0x8B);
@@ -10,7 +10,7 @@ void rtc_setup()
     ENABLE_INTERRUPT();
     
     // terminal_setcolor(VGA_GREEN);
-    // printf("[+]: RTC configure.\n");
+    puts("[+]: RTC configure.\n");
     // terminal_setcolor(VGA_WHITE);
 }
 

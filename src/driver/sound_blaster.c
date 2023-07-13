@@ -40,19 +40,19 @@ static bool resetDSP()
 void init_sound_blaster()
 {
     // terminal_setcolor(VGA_WHITE);
-    // printf("[+]: Configuration du sound blaster.\n");
+    puts("[+]: Configuration du sound blaster.\n");
 
     bool dsp_reset = resetDSP();
     if (dsp_reset)
     {
         // terminal_setcolor(VGA_GREEN);
-        // printf("[+]: Le DSP est reinitialise.\n");
+        puts("[+]: Le DSP est reinitialise.\n");
         // terminal_setcolor(VGA_WHITE);
     }
     else
     {
         // terminal_setcolor(VGA_RED);
-        // printf("[+]: Le DSP n'a pas ete reinitialise.\n");
+        puts("[+]: Le DSP n'a pas ete reinitialise.\n");
         // terminal_setcolor(VGA_WHITE);
     }
 

@@ -1,9 +1,8 @@
-/*
-    File          : string.h
-    Creation date : 11/07/2023
- */
-
 #include "klibc/string.h"
+
+/////////////////
+//  Functions  //
+/////////////////
 
 void *memcpy(void *dest, const void *src, size_t n)
 {
@@ -90,4 +89,35 @@ void *memset(void *ptr, int value, size_t count)
     }
 
     return ptr;
+}
+
+size_t strlen(const char *str)
+{
+    size_t length = 0;
+    while(str[length] != '\0')
+    {
+        ++length;
+    }
+    return length;
+}
+
+/////////////////////////////
+//  Non standard fucntion  //
+/////////////////////////////
+
+char *strrev(char *str)
+{
+    if(str == NULL)
+    {
+        return NULL;
+    }
+
+    int length = strlen(str);
+
+    for(int i = 0; i < length / 2; ++i)
+    {
+        char tmp = str[i];
+        str[i] = str[length - i - 1];
+        str[length - i - 1] = tmp;
+    }
 }

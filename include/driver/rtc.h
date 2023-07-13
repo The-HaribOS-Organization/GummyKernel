@@ -1,7 +1,7 @@
-/* 
-   Cet en-tête contient tous les prototypes de fonctions
-   nécessaires au fonctionnement du RTC (Real-Time Clock).
-*/
+/*
+    File    : rtc.h
+    Utility : The RTC driver
+ */
 
 #ifndef KERNEL_RTC_H_INCLUDED
 #define KERNEL_RTC_H_INCLUDED

@@ -1,6 +1,11 @@
 #ifndef KERNEL_IO_H_INCLUDED
 #define KERNEL_IO_H_INCLUDED
 
+/*
+    File    : io.h
+    Utility : Input/Output to CPU ports
+ */
+
 #include <stdint.h>
 
 /////////////////////////

@@ -1,3 +1,8 @@
+/*
+    File    : msr.h
+    Utility : The MSR driver
+ */
+
 #ifndef KERNEL_MSR_H_INCLUDED
 #define KERNEL_MSR_H_INCLUDED
 

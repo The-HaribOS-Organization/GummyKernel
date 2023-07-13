@@ -2,7 +2,7 @@
 
 void apic_enable()
 {
-    //printf("[+]: Activation du APIC.\n");
+    puts("[+]: Activation du APIC.\n");
 
     uintptr_t base = apic_getBase();
     apic_setBase(base);
@@ -10,7 +10,7 @@ void apic_enable()
     lapic_writeRegister(LAPIC_BASE_ADDRESS, LAPIC_SPURIOUS_IV_REGISTER, (lapic_readRegister(LAPIC_BASE_ADDRESS, LAPIC_SPURIOUS_IV_REGISTER) | 0x100));
 
     //terminal_setcolor(VGA_GREEN);
-    //printf("[+]: APIC active.\n");
+    puts("[+]: APIC active.\n");
     //terminal_setcolor(VGA_WHITE);
 }
 

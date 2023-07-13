@@ -1,6 +1,7 @@
-/* Ce fichier contient les macros ainsi que les 
-prototypes de fonctions nécessaires à l'utilisation
-du sound blaster afin de jouer des sons sur l'ordinateur.*/
+/*
+    File    : sound_blaster.h
+    Utility : The SoundBlaster driver
+ */
 
 #ifndef KERNEL_SOUND_BLASTER_H_INCLUDED
 #define KERNEL_SOUND_BLASTER_H_INCLUDED

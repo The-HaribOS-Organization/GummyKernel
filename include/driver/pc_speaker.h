@@ -1,5 +1,7 @@
-/* Ce fichier contient les fonctions nécessaires
-à l'utilisation du haut-parleur */
+/*
+    File    : pc_speaker.h
+    Utility : The speaker driver
+ */
 
 #ifndef KERNEL_PC_SPEAKER_H_INCLUDED
 #define KERNEL_PC_SPEAKER_H_INCLUDED
