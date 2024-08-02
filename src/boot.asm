@@ -1,0 +1,89 @@
+; pour multiboot version 1
+
+;MBALIGN equ 1 << 0
+;MEMINFO equ 1 << 1
+;GFX equ 1 << 2
+;MBFLAGS equ MBALIGN | MEMINFO | GFX
+;MAGIC equ 0x1BADB002
+;CHECKSUM equ -(MAGIC + MBFLAGS)
+
+
+MULTIBOOT2_HEADER_MAGIC equ 0xe85250d6
+
+MULTIBOOT_TAG_ALIGN equ 8
+MULTIBOOT_TAG_TYPE_END equ 0
+MULTIBOOT_TAG_TYPE_BOOT_LOADER_NAME equ 2
+MULTIBOOT_TAG_TYPE_BASIC_MEMINFO equ 4
+MULTIBOOT_TAG_TYPE_MMAP equ 6
+MULTIBOOT_TAG_TYPE_VBE equ 7
+MULTIBOOT_TAG_TYPE_FRAMEBUFFER equ 8
+MULTIBOOT_TAG_TYPE_APM equ 10
+MULTIBOOT_TAG_TYPE_SMBIOS equ 13
+MULTIBOOT_TAG_TYPE_ACPI_NEW equ 15
+
+MULTIBOOT_HEADER_TAG_INFORMATION_REQUEST equ 1
+MULTIBOOT_HEADER_TAG_ADDRESS equ 2
+MULTIBOOT_HEADER_TAG_ENTRY_ADDRESS equ 3
+MULTIBOOT_HEADER_TAG_CONSOLE_FLAGS equ 4
+MULTIBOOT_HEADER_TAG_FRAMEBUFFER equ 5
+MULTIBOOT_TAG_TYPE_VBE equ 7
+MULTIBOOT_TAG_TYPE_APM equ 10
+
+MULTIBOOT_ARCHITECTURE_I386 equ 0
+
+LEN equ (header_end - header_start)
+CHECKSUM equ 0x100000000 - (MULTIBOOT2_HEADER_MAGIC + MULTIBOOT_ARCHITECTURE_I386 + LEN)
+
+SECTION .multiboot2
+header_start:
+align 4
+    dd MULTIBOOT2_HEADER_MAGIC
+    dd MULTIBOOT_ARCHITECTURE_I386
+    dd LEN
+    dd CHECKSUM
+    dw MULTIBOOT_HEADER_TAG_FRAMEBUFFER
+    dw 0
+    dd 20
+    dd 1280
+    dd 720
+    dd 32
+    dd MULTIBOOT_TAG_TYPE_END
+    dd MULTIBOOT_TAG_TYPE_END
+    dd MULTIBOOT_TAG_ALIGN
+;multiboot version 1 header
+;    dd MAGIC
+;    dd MBFLAGS
+;    dd CHECKSUM
+;    dd 0x00000000
+;    dd 0x00000000
+;    dd 0x00000000
+;    dd 0x00000000
+;    dd 0x00000000
+;    dd 0x0
+;    dd 1280
+;    dd 720
+;    dd 32
+header_end:
+
+
+SECTION .bss
+align 16
+stack_bottom: RESB 16384
+stack_top:
+
+
+SECTION .text
+global _start:function (_start.end - _start)
+extern kernel_main
+
+_start:
+
+    mov esp, stack_top
+    push eax
+    push ebx
+    call kernel_main
+    cli
+
+.hang: hlt
+    jmp .hang
+.end:

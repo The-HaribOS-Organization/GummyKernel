@@ -1,48 +1,37 @@
-# Compilers & Linker
-AS = nasm
-ASFLAGS = -f elf64
+GCCPARAMS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Iinclude -fstack-protector-all
+GCCLINKING = -ffreestanding -O2 -nostdlib -lgcc
+NASMPARAMS = -felf32
 
-CXX = clang
-CXXFLAGS = -Wextra -Wall -target x86_64-unknown-windows -ffreestanding -fshort-wchar -mno-red-zone -nostdinc
-INCLUDE_HEADERS = -I include -I include/klibc
-
-LD = ld
-LDFILE = kernel.ld 
-
-# Files
-C_SRCS := $(shell find src -name "*.c")
-
+SRCS := $(wildcard src/*.c) $(wildcard src/**/*.c) $(wildcard src/*.asm) $(wildcard src/**/*.asm)
 OBJ_DIR := obj
-C_OBJS := $(patsubst src/%.c, $(OBJ_DIR)/%.o, $(C_SRCS))
-
-# Need to fill up when a new asm file is added -> new line in asmFiles
-ASM_OBJS := obj/apic/msr.o \
-			obj/hardwareCommunication/io.o
+OBJS := $(patsubst src/%.c, $(OBJ_DIR)/%.o, $(patsubst src/%.asm, $(OBJ_DIR)/%.o, $(SRCS)))
+LINKFILE = linker.ld
 
 
-BUILD_DIR = bin
-
-# Linker
-LDFLAGS = -T $(LDFILE) -static -Bsymbolic -nostdlib
-
-all: cFiles asmFiles build
-
-cFiles: $(C_OBJS)
+gummykernel: $(OBJS) gummybin.bin gummybin.iso
 
 $(OBJ_DIR)/%.o: src/%.c
 	@ mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(INCLUDE_HEADERS) -c $< -o $@
+	i686-elf-gcc $(GCCPARAMS) -c $< -o $@
 
-asmFiles:
-	$(AS) $(ASFLAGS) src/apic/msr.asm -o obj/apic/msr.o
-	$(AS) $(ASFLAGS) src/hardwareCommunication/io.asm -o obj/hardwareCommunication/io.o
+$(OBJ_DIR)/%.o: src/%.asm
+	@ mkdir -p $(@D)
+	nasm $(NASMPARAMS) $< -o $@
 
-build:
-	@ mkdir -p $(BUILD_DIR)
-	$(LD) $(LDFLAGS) -o $(BUILD_DIR)/kernel.elf $(C_OBJS) $(ASM_OBJS)
+gummybin.bin: $(OBJFILES) $(LINKFILE)
+	i686-elf-gcc -T $(LINKFILE) -o $@ $(OBJS) $(GCCLINKING)
+
+gummybin.iso:
+	cp gummybin.bin iso/boot/gummybin.bin
+	grub-mkrescue -o gummybin.iso iso
 
 clean:
-	rm -rf $(OBJ_DIR)
-	rm -rf $(BUILD_DIR)
+	rm -rv obj/*
+	rm -rv gummybin.bin
+	rm -rv gummybin.iso
+	rm -rv iso/boot/gummybin.bin
 
-.PHONY: all cFiles asmFiles build clean
+run:
+	qemu-system-i386 -cdrom gummybin.iso -M smm=off -d int -audiodev pa,id=snd0 -machine pcspk-audiodev=snd0 -serial pty
+
+.PHONY: gummykernel boot_file gummybin gummyiso clean run run-debug
