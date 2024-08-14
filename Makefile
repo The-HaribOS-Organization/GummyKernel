@@ -1,4 +1,4 @@
-GCCPARAMS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Iinclude -fstack-protector-all
+GCCPARAMS = -std=gnu99 -ffreestanding -O2 -Wall -Wextra -Iinclude -fno-stack-protector
 GCCLINKING = -ffreestanding -O2 -nostdlib -lgcc
 NASMPARAMS = -felf32
 
@@ -26,8 +26,8 @@ gummybin.iso:
 	grub-mkrescue -o gummybin.iso iso
 
 clean:
-	rm -rv obj/*
 	rm -rv gummybin.bin
+	rm -rv obj/*
 	rm -rv gummybin.iso
 	rm -rv iso/boot/gummybin.bin
 

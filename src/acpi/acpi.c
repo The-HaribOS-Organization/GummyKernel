@@ -14,6 +14,6 @@ void find_FADT(uint8_t *rsdp_pointer) {
     for (uint32_t i = 0; i < entry; i++) {
 
         description_header_t *h = (description_header_t *)rsdt->entries[i];
-        if (!strcmp("FACP", h->signature)) printf("FADT trouve.\n", (Vec3){87, 255, 127, 0});
+        if (!strcmp("FACP", h->signature)) printf("\x1b[87;255;127mFADT trouve.\n");
     }
 }

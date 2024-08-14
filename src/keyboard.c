@@ -42,6 +42,6 @@ void kboard_handler(isr_frame *frame) {
     if (inb(COMMAND_REGISTER_KBOARD) & 0x01) {
 
         uint8_t scan_code = inb(DATA_PORT);
-        printf(scan_code_set_1[scan_code], (Vec3){125, 125, 255, 0});
+        printf("\x1b[125;125;255m%s", scan_code_set_1[scan_code]);
     }
 }

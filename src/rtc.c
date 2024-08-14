@@ -61,8 +61,8 @@ void enable_binary_mode(void) {
     outb(REGISTER_NUMBER, value_register & 0x04);
 
     (inb(REGISTER_B_SELECTION) & 0x04) 
-        ? printf("[RTC]: Mode binaire active.\n", (Vec3){107, 255, 225, 0})
-        : printf("[RTC]: Mode binaire non active.\n", (Vec3){255, 50, 50, 0});
+        ? printf("\x1b[107;255;225m[RTC]: Mode binaire active.\n")
+        : printf("\x1b[255;50;50m[RTC]: Mode binaire non active.\n");
 
     __asm__ volatile("sti");
 }
@@ -74,8 +74,8 @@ void enable_bcd_mode(void) {
     outb(REGISTER_NUMBER, value_register ^ 0x04);
 
     ((inb(REGISTER_B_SELECTION) ^ 0x04) == 0) 
-        ? printf("[RTC]: Mode BCD active.\n", (Vec3){107, 255, 225, 0})
-        : printf("[RTC]: Mode BCD non active.\n", (Vec3){255, 50, 50, 0});
+        ? printf("\x1b[107;255;225m[RTC]: Mode BCD active.\n")
+        : printf("\x1b[255;50;50m[RTC]: Mode BCD non active.\n");
 }
 
 datetime_t get_time(void) {
