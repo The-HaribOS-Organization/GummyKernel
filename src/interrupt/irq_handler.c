@@ -14,9 +14,7 @@ volatile isr_frame *irq_stack_state;
 /* void irq_handler(isr_frame *frame) {
 
     
-    printf("IRQ declenche: ", (Vec3){255, 125, 50, 0});
-    printf(itoa(frame->interrupt, 10), (Vec3){255, 125, 50, 0});
-    putchar('\n', (Vec3){255, 125, 50, 0});
+    printf("\x1b[255;125;50mIRQ declenche: %d\n", frame->interrupt);
 
     void (*handler)(isr_frame *frame);
     handler = irq_routines[frame->interrupt - 32];

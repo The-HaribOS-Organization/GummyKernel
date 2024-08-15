@@ -11,8 +11,8 @@
 
 
 // Affichage de chaînes de caractères.
-void printf(const char *string, const Vec3 color);
-void putchar(const char character, const Vec3 color);
+void printf(char *s, ...);
+void putchar(const char character);
 
 // Fonctions permettant la conversion de chaînes en entiers.
 char *itoa(int_fast32_t number, const uint8_t base);

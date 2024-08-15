@@ -71,15 +71,11 @@ void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
             } else if (tag->type == MULTIBOOT_TAG_TYPE_ACPI_NEW) {
 
                 struct multiboot_tag_new_acpi *acpi = (struct multiboot_tag_new_acpi *)tag;
-                printf("RSDP address: ", (Vec3){255, 176, 107, 0});
-                printf(itoa((int_fast32_t)acpi->rsdp, 16), (Vec3){255, 176, 107, 0});
+                printf("\x1b[255;176;107mRSDP address: 0x%x\n", (int_fast32_t)acpi->rsdp);
             } else if (tag->type == MULTIBOOT_TAG_TYPE_ACPI_OLD) {
 
                 struct multiboot_tag_old_acpi *acpi = (struct multiboot_tag_old_acpi *)tag;
-                printf("RSDP address: ", (Vec3){255, 176, 107, 0});
-                printf(itoa((int_fast32_t)acpi->rsdp, 16), (Vec3){255, 176, 107, 0});
-                putchar('\n', (Vec3){255, 176, 107, 0});
-
+                printf("\x1b[255;176;107mRSDP address: 0x%x\n", (int_fast32_t)acpi->rsdp);
                 rsdp = acpi->rsdp;
             }
         }
@@ -87,32 +83,23 @@ void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
 #endif
 
     initGDT();
-    printf("[+]: GDT initialise\n", (Vec3){241, 202, 255, 0});
+    printf("\x1b[241;202;255m[+]: GDT initialise\n");
 
     initIDT();
-    printf("[+]: IDT initialise\n", (Vec3){241, 202, 255, 0});
+    printf("\x1b[241;202;255m[+]: IDT initialise\n");
 
     initRTC();
-    printf("[+]: RTC initialise\n", (Vec3){241, 202, 255, 0});
+    printf("\x1b[241;202;255m[+]: RTC initialise\n");
 
     init_timer(15);
-    printf("[+]: PIT initialise\n", (Vec3){241, 202, 255, 0});
+    printf("\x1b[241;202;255m[+]: PIT initialise\n");
 
     init_kboard();
-    printf("[+]: Clavier PS/2 initialise\n", (Vec3){241, 202, 255, 0});
+    printf("\x1b[241;202;255m[+]: Clavier PS/2 initialise\n");
 
     datetime_t date = get_time();
-
-    printf("[+]: Date du jour: ", (Vec3){220, 255, 235, 0});
-    printf(map_week(date.weekday), (Vec3){220, 255, 235, 0});
-    putchar(' ', (Vec3){255, 255, 255, 0});
-    printf(itoa(date.day_month, 10), (Vec3){220, 255, 235, 0});
-    putchar(' ', (Vec3){255, 255, 255, 0});
-    printf(map_month(date.month), (Vec3){220, 255, 235, 0});
-    putchar(' ', (Vec3){255, 255, 255, 0});
-    printf(itoa(date.year + 2000, 10), (Vec3){220, 255, 235, 0});
-    putchar('\n', (Vec3){255, 255, 255, 0});
-
+    printf("\x1b[220;255;235m[+]: Date du jour: %s %u %s %d\n", map_week(date.weekday), date.day_month, map_month(date.month), date.year + 2000);
+    
     find_FADT(rsdp);
 
     for (uint8_t i = 0; i < 4; i++) {
