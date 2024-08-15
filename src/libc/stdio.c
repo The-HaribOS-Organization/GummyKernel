@@ -58,8 +58,19 @@ void print_num(long val, int base, bool is_signed, bool zero_padded, int width) 
     }
 }
 
-void handle_format(char **s, va_list *va_lst, bool zero_padded, size_t width) {
-    switch (**s) {
+// Fonction pour extraire un nombre entier de la chaîne de caractères
+int parse_number(char **s) {
+    int num = 0;
+    while (isdigit(**s)) {
+        num = num * 10 + (**s - '0');
+        (*s)++;
+    }
+    return num;
+}
+
+
+void handle_format(char c, va_list *va_lst, bool zero_padded, int width) {
+    switch (c) {
         case 'd': {
             int val = va_arg(*va_lst, int);
             print_num(val, 10, true, zero_padded, width);
@@ -67,34 +78,104 @@ void handle_format(char **s, va_list *va_lst, bool zero_padded, size_t width) {
         }
         case 'u': {
             unsigned int val = va_arg(*va_lst, unsigned int);
-            print_num(val, 10, true, zero_padded, width);
+            print_num(val, 10, false, zero_padded, width);
             break;
         }
-        case 'x': {
+        case 'x':
+        case 'X': {
+            unsigned long val = va_arg(*va_lst, unsigned long long);
+            print_num(val, 16, false, zero_padded, width);
+            break;
+        }
+        case 'p': {
             unsigned long val = va_arg(*va_lst, unsigned long);
-            print_num(val, 16, true, zero_padded, width);
+            print_num(val, 16, false, true, 8);
             break;
         }
         case 's': {
-            char *val = va_arg(*va_lst, char *);
-            while(*val){
-                putchar(*val);
-                val++;
-            }
+            char *str = va_arg(*va_lst, char *);
+            printf(str);
+            break;
+        }
+        case 'c': {
+            char val = (char) va_arg(*va_lst, int);
+            putchar(val);
             break;
         }
         default: {
             putchar('%');
-            putchar(**s);
+            putchar(c);
             break;
         }
     }
-    (*s)++; // Avancer le pointeur après avoir traité le spécificateur de format
 }
 
-void printf(char *string, ...) {
+void handle_color(char **s) {
+    (*s)++;
+    if (**s == '[') {
+        (*s)++;
+        uint8_t R = 0, G = 0, B = 0, A = 255; // Valeurs par défaut
+        bool color_set = false;
+        int color = parse_number(s);
+        
+
+        // Traitement des codes de couleur
+        if (color >= 30 && color <= 37) {
+            // Couleurs de texte standard
+            switch (color) {
+                case 30: R = 0; G = 0; B = 0; break;       // Noir
+                case 31: R = 255; G = 0; B = 0; break;       // Rouge
+                case 32: R = 0; G = 255; B = 0; break;       // Vert
+                case 33: R = 255; G = 255; B = 0; break;     // Jaune
+                case 34: R = 0; G = 0; B = 255; break;       // Bleu
+                case 35: R = 255; G = 0; B = 255; break;     // Magenta
+                case 36: R = 0; G = 255; B = 255; break;     // Cyan
+                case 37: R = 255; G = 255; B = 255; break;   // Blanc
+            }
+            color_set = true;
+        } else if (color >= 90 && color <= 97) {
+            // Couleurs de texte claires
+            switch (color) {
+                case 90: R = 169; G = 169; B = 169; break;   // Gris clair
+                case 91: R = 255; G = 69; B = 0; break;       // Orange
+                case 92: R = 50; G = 205; B = 50; break;      // Vert clair
+                case 93: R = 255; G = 255; B = 102; break;    // Jaune clair
+                case 94: R = 135; G = 206; B = 235; break;    // Bleu clair
+                case 95: R = 255; G = 105; B = 180; break;    // Rose
+                case 96: R = 0; G = 206; B = 209; break;      // Turquoise
+                case 97: R = 211; G = 211; B = 211; break;    // Gris très clair
+            }
+            color_set = true;
+        } else if((color >= 0 && color <= 255) && !color_set){
+            R = color;
+            if (**s == ';') {
+                (*s)++;
+                G = parse_number(s);
+                if (**s == ';') {
+                    (*s)++;
+                    B = parse_number(s);
+                    if (**s == ';') {
+                        (*s)++;
+                        A = parse_number(s);
+                    }
+                }
+            }
+            color_set = true;
+        }
+
+        if (**s == 'm') {
+            (*s)++;
+        }
+
+        if (color_set) {
+            set_color((Vec3) {R, G, B, A});
+        }
+    }
+}
+
+void printf(char *s, ...) {
     va_list va_lst;
-    va_start(va_lst, string);
+    va_start(va_lst, s);
 
     if (row == WIDTH) {
         row = 0;
@@ -104,64 +185,45 @@ void printf(char *string, ...) {
         memset(framebuffer, 0, WIDTH * HEIGHT * 4);
         fillScreen((Vec3){35, 38, 39, 0});
     }
-    while(*string){
-        if (*string == '\x1b') { // Détection du caractère ESC (0x1b)
-            if (*(string + 1) == '[') { // Détection de l'ouverture de la séquence '['
-                string += 2; // Avancez le pointeur pour traiter les caractères après '['
-                if (*string == '2' && *(string + 1) == 'J') {
+    while(*s){
+        if (*s == '\x1b') {
+            if (*(s + 1) == '[') {
+                if (*(s + 2) == '2' && *(s + 3) == 'J') {
                     // Gérer l'effacement de l'écran
                     row = 0;
                     column = 0;
                     memset(framebuffer, 0, WIDTH * HEIGHT * 4);
                     fillScreen((Vec3){35, 38, 39, 0});
-                    string += 3; // Skip '2J'
-                } else if (*string == 'H') {
+                    s += 4; // Skip '2J'
+                } else if (*(s + 2) == 'H') {
                     // Repositionnez le curseur
                     row = 0;
                     column = 0;
-                    string += 2; // Skip 'H'
-                } else if (isdigit(*string) && isdigit(*(string + 1)) && isdigit(*(string + 2)) &&
-                           *(string + 3) == ';' &&
-                           isdigit(*(string + 4)) && isdigit(*(string + 5)) && isdigit(*(string + 6)) &&
-                           *(string + 7) == ';' &&
-                           isdigit(*(string + 8)) && isdigit(*(string + 9)) && isdigit(*(string + 10))) {
-                    // Traiter la séquence de couleur 'xxx;xxx;xxxm'
-                    uint8_t R = (*string - '0') << 4 | (*(string + 1) - '0') << 2 | (*(string + 2) - '0');
-                    uint8_t G = (*(string + 4) - '0') << 4 | (*(string + 5) - '0') << 2 | (*(string + 6) - '0');
-                    uint8_t B = (*(string + 8) - '0') << 4 | (*(string + 9) - '0') << 2 | (*(string + 10) - '0');
-                    uint8_t A = 255;
-                    if(*(string + 11) == ';' && isdigit(*(string + 12)) && isdigit(*(string + 13)) && isdigit(*(string + 14))){
-                        A = (*(string + 12) - '0') << 4 | (*(string + 13) - '0') << 2 | (*(string + 14) - '0');
-                        string += 3;
-                    }
-                    set_color((Vec3){R, G, B, A});
-                    string += 12; // Skip 'xxx;xxx;xxx'
+                    s += 3; // Skip 'H'
                 } else {
-                    // Si une autre séquence n'est pas reconnue, avancez pour ignorer la séquence
-                    while (*string && *string != 'm') {
-                        string++;
-                    }
-                    if (*string == 'm') {
-                        string++; // Skip 'm'
-                    }
+                    // Traitez les séquences de couleur ici
+                    handle_color(&s);
                 }
+            } else {
+                // Traitez d'autres séquences d'échva_lstpement ici si nécessaire
+                s++;
             }
-        } else if (*string == '%') {
+        } else if (*s == '%') {
             bool zero_padded = false;
             int width = 0;
-            string++;
-            if (*string == '0') {
+            s++;
+            if (*s == '0') {
                 zero_padded = true;
-                string++;
+                s++;
             }
-            while (isdigit(*string)) {
-                width = width * 10 + (*string - '0');
-                string++;
+            while (isdigit(*s)) {
+                width = width * 10 + (*s - '0');
+                s++;
             }
-            handle_format(&string, &va_lst, zero_padded, width);
+            handle_format(*s, &va_lst, zero_padded, width);
+            s++;
         } else {
-            putchar(*string);
-            string++;
+            putchar(*s++);
         }
     }
     va_end(va_lst);
@@ -179,12 +241,12 @@ void putchar(const char character) {
     }
 }
 
-int atoi(const char *string) {
+int atoi(const char *s) {
 
     int result = 0, sum = 0;
-    for (uint16_t i = 0; string[i] != '\0'; i++) {
+    for (uint16_t i = 0; s[i] != '\0'; i++) {
 
-        result = string[i] - 0x30;
+        result = s[i] - 0x30;
         sum = (sum * 10) + result;
     }
 

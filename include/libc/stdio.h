@@ -11,7 +11,7 @@
 
 
 // Affichage de chaînes de caractères.
-void printf(char *string, ...);
+void printf(char *s, ...);
 void putchar(const char character);
 
 // Fonctions permettant la conversion de chaînes en entiers.

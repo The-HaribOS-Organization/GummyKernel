@@ -71,11 +71,11 @@ void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
             } else if (tag->type == MULTIBOOT_TAG_TYPE_ACPI_NEW) {
 
                 struct multiboot_tag_new_acpi *acpi = (struct multiboot_tag_new_acpi *)tag;
-                printf("\x1b[255;176;107mRSDP address: %x\n", (int_fast32_t)acpi->rsdp);
+                printf("\x1b[255;176;107mRSDP address: 0x%x\n", (int_fast32_t)acpi->rsdp);
             } else if (tag->type == MULTIBOOT_TAG_TYPE_ACPI_OLD) {
 
                 struct multiboot_tag_old_acpi *acpi = (struct multiboot_tag_old_acpi *)tag;
-                printf("\x1b[255;176;107mRSDP address: %x\n", (int_fast32_t)acpi->rsdp);
+                printf("\x1b[255;176;107mRSDP address: 0x%x\n", (int_fast32_t)acpi->rsdp);
                 rsdp = acpi->rsdp;
             }
         }
@@ -99,7 +99,7 @@ void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
 
     datetime_t date = get_time();
     printf("\x1b[220;255;235m[+]: Date du jour: %s %u %s %d\n", map_week(date.weekday), date.day_month, map_month(date.month), date.year + 2000);
-    asm ("int $0");
+    
     find_FADT(rsdp);
 
     for (uint8_t i = 0; i < 4; i++) {
