@@ -25,9 +25,7 @@ typedef struct {
 inline rsdp_t *get_rsdp_struct(uint8_t *rsdp_pointer) {
 
     rsdp_t *rsdp = (rsdp_t *)rsdp_pointer;
-    printf(rsdp->signature, (Vec3){125, 125, 125, 0});
-    putchar('\n',(Vec3){125, 125, 125, 0});
-
+    printf("\x1b[125;125;125m0x%s\n", rsdp->signature);
     return rsdp;
 }
 

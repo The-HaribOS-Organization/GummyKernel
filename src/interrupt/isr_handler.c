@@ -15,8 +15,7 @@ static char *isr_name[] = {
 void isr_handler(isr_frame *frame) {
 
     if (frame->interrupt < 32) {
-        printf("Interruption: ", (Vec3){255, 107, 107, 0});
-        printf(isr_name[frame->interrupt], (Vec3){255, 107, 107, 0});
+        printf("\x1b[255;107;107mInterruption: %s\n", isr_name[frame->interrupt]);
         __asm__ volatile("cli; hlt");
     }
 }

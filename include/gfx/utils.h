@@ -8,7 +8,6 @@
 #define RGB2BGR(r, g, b) ((b >> 24) | (g >> 16) | (r >> 8))
 
 typedef struct {
-
     uint8_t red;
     uint8_t green;
     uint8_t blue;
@@ -16,7 +15,6 @@ typedef struct {
 } Vec3;
 
 typedef struct {
-
     uint_fast32_t x;
     uint_fast32_t y;
 } Vec2;

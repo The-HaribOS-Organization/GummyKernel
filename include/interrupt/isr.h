@@ -1,11 +1,9 @@
 #ifndef _ISR_
 #define _ISR_
 
-
 #include <stdint.h>
 
-
-typedef struct {
+typedef struct isr_frame {
     uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;
     uint32_t interrupt, error;
 } __attribute__((packed)) isr_frame;

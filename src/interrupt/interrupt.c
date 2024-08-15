@@ -24,7 +24,7 @@ void initIDT(void) {
         setIDTDescriptor(i, isr_array[i], INTERRUPT_GATE);
 
     initPIC();
-    printf("[+]: PIC initialise\n", (Vec3){241, 202, 255, 0});
+    printf("\x1b[241;202;255m[+]: PIC initialise\n");
     // for (uint8_t i = 32; i < 48; i++)
     setIDTDescriptor(32, irq_0, INTERRUPT_GATE);
     setIDTDescriptor(33, irq_1, INTERRUPT_GATE); // , irq_array[i-32], INTERRUPT_GATE);

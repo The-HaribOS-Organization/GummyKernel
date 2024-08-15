@@ -9,8 +9,8 @@ __attribute__((noreturn))
 void __stack_chk_fail(void) {
 
 #if __STDC_HOSTED__
-    printf("Stack Smashing detecte.", (Vec3){255, 50, 50, 0});
+    printf("\x1b[255;50;50mStack Smashing detecte.");
 #else
-    printf("Stack Smashing detecte.", (Vec3){255, 50, 50, 0});
+    printf("\x1b[255;50;50mStack Smashing detecte.");
 #endif
 }
