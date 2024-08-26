@@ -32,7 +32,6 @@ char *scan_code_set_2[] = {
 
 void init_kboard(void) {
 
-    outb(COMMAND_REGISTER_KBOARD, 0x55);
     pic_clear_mask(1);
 }
 

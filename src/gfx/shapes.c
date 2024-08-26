@@ -5,6 +5,18 @@
 #include "gfx/shapes.h"
 
 
+void bresenhamAlgorithm(Vec2 position, Vec3 color, uint16_t x, uint16_t y) {
+
+	drawPoint((Vec2){position.x+x, position.y+y}, (color.red << 16 | color.green << 8 | color.blue));
+    drawPoint((Vec2){position.x-x, position.y+y}, (color.red << 16 | color.green << 8 | color.blue));
+    drawPoint((Vec2){position.x+x, position.y-y}, (color.red << 16 | color.green << 8 | color.blue));
+    drawPoint((Vec2){position.x-x, position.y-y}, (color.red << 16 | color.green << 8 | color.blue));
+    drawPoint((Vec2){position.x+y, position.y+x}, (color.red << 16 | color.green << 8 | color.blue));
+    drawPoint((Vec2){position.x-y, position.y+x}, (color.red << 16 | color.green << 8 | color.blue));
+    drawPoint((Vec2){position.x+y, position.y-x}, (color.red << 16 | color.green << 8 | color.blue));
+    drawPoint((Vec2){position.x-y, position.y-x}, (color.red << 16 | color.green << 8 | color.blue));
+}
+
 void drawLine(Vec2 position, Vec3 color, Vec2 lenght) {
 
     uint_fast32_t dx = (lenght.x - position.x),
@@ -97,16 +109,4 @@ void fillScreen(Vec3 color) {
             drawPoint((Vec2){i, j}, ((color.red << 16) | (color.green << 8) | (color.blue)));
         }
     }
-}
-
-void bresenhamAlgorithm(Vec2 position, Vec3 color, uint16_t x, uint16_t y) {
-
-	drawPoint((Vec2){position.x+x, position.y+y}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x-x, position.y+y}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x+x, position.y-y}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x-x, position.y-y}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x+y, position.y+x}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x-y, position.y+x}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x+y, position.y-x}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x-y, position.y-x}, (color.red << 16 | color.green << 8 | color.blue));
 }

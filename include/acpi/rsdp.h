@@ -25,8 +25,17 @@ typedef struct {
 inline rsdp_t *get_rsdp_struct(uint8_t *rsdp_pointer) {
 
     rsdp_t *rsdp = (rsdp_t *)rsdp_pointer;
-    printf("\x1b[125;125;125m0x%s\n", rsdp->signature);
     return rsdp;
+}
+
+inline bool checksum_field(description_header_t *tableHeader) {
+
+    unsigned char sum = 0;
+
+    for (uint32_t i = 0; i < tableHeader->lenght; i++)
+        sum += ((char *) tableHeader)[i];
+
+    return sum == 0;
 }
 
 

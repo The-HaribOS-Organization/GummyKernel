@@ -8,7 +8,7 @@ void make_beep(uint_fast32_t frequency) {
 
     uint_fast32_t divisor = PIT_INPUT_CLOCK / frequency;
     outb(COMMAND_REGISTER, 0xB6);
-    outb(CHANNEL_2_DATA_PORT, (uint8_t)(divisor & 0xFF));
+    outb(CHANNEL_2_DATA_PORT, (uint8_t)divisor);
     outb(CHANNEL_2_DATA_PORT, (uint8_t)(divisor >> 8));
 
     uint8_t tmp = inb(0x61);

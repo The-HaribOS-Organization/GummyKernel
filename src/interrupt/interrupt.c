@@ -25,9 +25,8 @@ void initIDT(void) {
 
     initPIC();
     printf("\x1b[241;202;255m[+]: PIC initialise\n");
-    // for (uint8_t i = 32; i < 48; i++)
     setIDTDescriptor(32, irq_0, INTERRUPT_GATE);
-    setIDTDescriptor(33, irq_1, INTERRUPT_GATE); // , irq_array[i-32], INTERRUPT_GATE);
+    setIDTDescriptor(33, irq_1, INTERRUPT_GATE);
 
 #ifdef USE_ASSEMBLY_ROUTINE_
     setIDT((uint32_t)&idt);

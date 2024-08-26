@@ -183,7 +183,7 @@ void printf(char *s, ...) {
         row = 0;
         column = 0;
         memset(framebuffer, 0, WIDTH * HEIGHT * 4);
-        fillScreen((Vec3){35, 38, 39, 0});
+        fillScreen((Vec3){75, 50, 48, 0});
     }
     while(*s){
         if (*s == '\x1b') {
@@ -234,7 +234,7 @@ void printf(char *s, ...) {
 void putchar(const char character) {
     if (character == '\n') {
         row = 0;
-        column += 18;
+        column += 16;
     } else {
         drawChar(character, (Vec2){row, column}, ((_color.red << 16) | (_color.green << 8) | (_color.blue)));
         row += 8;

@@ -3,7 +3,9 @@
 
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "io.h"
+#include "acpi/fadt.h"
 
 
 #define REGISTER_NUMBER 0x70
@@ -49,6 +51,11 @@ typedef struct {
     uint8_t year;
 } datetime_t;
 
+
+static inline bool check_rtc_present(void) {
+
+    return (fadt_structure->iapc_boot_arch & 0x20);
+}
 
 static inline char *map_month(uint8_t month) {
 

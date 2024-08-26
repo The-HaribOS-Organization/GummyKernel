@@ -25,13 +25,13 @@ typedef struct {
 typedef struct {
     description_header_t h;
 #ifdef RSDT_
-    uint32_t entries[128];
+    uint32_t other_sdt[512];
 #elif defined(XSDT_T)
-    uint64_t entries[128];
+    uint64_t other_sdt[1024];
 #endif
 } __attribute__((packed)) acpi_rsdt_t;
 
-
-void find_FADT(uint8_t *rsdp_pointer);
+void *findDescriptor(uint32_t *rsdt, char *signature);
+bool check_acpi_enable(void);
 
 #endif

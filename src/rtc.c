@@ -1,9 +1,10 @@
 #include <stdint.h>
+#include <stdbool.h>
 #include "rtc.h"
 #include "io.h"
 #include "libc/stdio.h"
 #include "interrupt/8259PIC.h"
-
+#include "acpi/fadt.h"
 
 
 /* Les différents tableaux de chaînes de
@@ -13,12 +14,21 @@ de la semaine ainsi que les mois */
 
 void initRTC(void) {
 
-    __asm__ volatile("cli");
-    
-    outb(REGISTER_NUMBER, REGISTER_A_SELECTION);
-    outb(RW_RTC, 0x20);
-    __asm__ volatile("sti");
+    if (!check_rtc_present()) {
 
+        printf("\x1b[255;120;107m[+]: Erreur, pas de RTC present sur la machine.\n");
+        return;
+    } else {
+
+        printf("\x1b[107;255;152m[+]: RTC trouve sur la machine.\n");
+        __asm__ volatile("cli");
+        outb(REGISTER_NUMBER, REGISTER_A_SELECTION);
+        outb(RW_RTC, 0x20);
+        __asm__ volatile("sti");
+        return;
+    }
+
+    // A revoir plus tard.
     //set_IRQ_RTC();
     //pic_clear_mask(8);
 }

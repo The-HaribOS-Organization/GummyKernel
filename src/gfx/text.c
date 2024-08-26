@@ -8,9 +8,9 @@ void drawChar(char character, Vec2 position, int_fast32_t foregroundColor) {
 
 	Vec3 Colors;
 	int_fast32_t mask[8] = {128, 64, 32, 16, 8, 4, 2, 1};
-	uint8_t *glyph = zap_light18_psf + (int_fast32_t)character * 18;
+	uint8_t *glyph = g_8x16_font + (int_fast32_t)character * 16;
 
-	for (uint8_t cy = 0; cy < 22; cy++) {
+	for (uint8_t cy = 0; cy < 16; cy++) {
 		for (uint8_t cx = 0; cx < 8; cx++) {
 			
 			Colors = getPixelValue((Vec2){position.x + cx, position.y + cy});
