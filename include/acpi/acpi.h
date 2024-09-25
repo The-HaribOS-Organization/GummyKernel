@@ -5,7 +5,6 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "libc/stdio.h"
 
 
 typedef struct {
@@ -25,13 +24,13 @@ typedef struct {
 typedef struct {
     description_header_t h;
 #ifdef RSDT_
-    uint32_t other_sdt[512];
+    uint32_t other_sdt[4096];
 #elif defined(XSDT_T)
-    uint64_t other_sdt[1024];
+    uint64_t other_sdt[8192];
 #endif
 } __attribute__((packed)) acpi_rsdt_t;
 
-void *findDescriptor(uint32_t *rsdt, char *signature);
+void *findDescriptor(uint32_t *rsdt, char signature[4]);
 bool check_acpi_enable(void);
 
 #endif

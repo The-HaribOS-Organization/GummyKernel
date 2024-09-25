@@ -12,7 +12,8 @@
 
 static uint16_t row = 0;
 static uint16_t column = 0;
-Vec3 _color = (Vec3){255, 255, 255, 255};
+static Vec3 _color = (Vec3){86, 66, 49, 0}, _stat_color = (Vec3){255, 91, 91, 0}, _end_color = (Vec3){255, 164, 91, 0};
+
 
 int isdigit(char c){
     return (c >= '0' && c <= '9');
@@ -60,6 +61,7 @@ void print_num(long val, int base, bool is_signed, bool zero_padded, int width) 
 
 // Fonction pour extraire un nombre entier de la chaîne de caractères
 int parse_number(char **s) {
+
     int num = 0;
     while (isdigit(**s)) {
         num = num * 10 + (**s - '0');
@@ -70,38 +72,46 @@ int parse_number(char **s) {
 
 
 void handle_format(char c, va_list *va_lst, bool zero_padded, int width) {
+
     switch (c) {
+    
         case 'd': {
             int val = va_arg(*va_lst, int);
             print_num(val, 10, true, zero_padded, width);
             break;
         }
+    
         case 'u': {
             unsigned int val = va_arg(*va_lst, unsigned int);
             print_num(val, 10, false, zero_padded, width);
             break;
         }
+    
         case 'x':
         case 'X': {
             unsigned long val = va_arg(*va_lst, unsigned long long);
             print_num(val, 16, false, zero_padded, width);
             break;
         }
+    
         case 'p': {
             unsigned long val = va_arg(*va_lst, unsigned long);
             print_num(val, 16, false, true, 8);
             break;
         }
+    
         case 's': {
             char *str = va_arg(*va_lst, char *);
             printf(str);
             break;
         }
+    
         case 'c': {
             char val = (char) va_arg(*va_lst, int);
             putchar(val);
             break;
         }
+    
         default: {
             putchar('%');
             putchar(c);
@@ -111,8 +121,10 @@ void handle_format(char c, va_list *va_lst, bool zero_padded, int width) {
 }
 
 void handle_color(char **s) {
+    
     (*s)++;
     if (**s == '[') {
+    
         (*s)++;
         uint8_t R = 0, G = 0, B = 0, A = 255; // Valeurs par défaut
         bool color_set = false;
@@ -123,6 +135,7 @@ void handle_color(char **s) {
         if (color >= 30 && color <= 37) {
             // Couleurs de texte standard
             switch (color) {
+
                 case 30: R = 0; G = 0; B = 0; break;       // Noir
                 case 31: R = 255; G = 0; B = 0; break;       // Rouge
                 case 32: R = 0; G = 255; B = 0; break;       // Vert
@@ -134,6 +147,7 @@ void handle_color(char **s) {
             }
             color_set = true;
         } else if (color >= 90 && color <= 97) {
+    
             // Couleurs de texte claires
             switch (color) {
                 case 90: R = 169; G = 169; B = 169; break;   // Gris clair
@@ -147,6 +161,7 @@ void handle_color(char **s) {
             }
             color_set = true;
         } else if((color >= 0 && color <= 255) && !color_set){
+    
             R = color;
             if (**s == ';') {
                 (*s)++;
@@ -163,37 +178,36 @@ void handle_color(char **s) {
             color_set = true;
         }
 
-        if (**s == 'm') {
-            (*s)++;
-        }
-
-        if (color_set) {
-            set_color((Vec3) {R, G, B, A});
-        }
+        if (**s == 'm') (*s)++;
+        if (color_set) set_color((Vec3) {R, G, B, A});
     }
 }
 
 void printf(char *s, ...) {
+    
     va_list va_lst;
     va_start(va_lst, s);
 
     if (row == WIDTH) {
-        row = 0;
+        column++;
     } else if (column == HEIGHT) {
-        row = 0;
-        column = 0;
-        memset(framebuffer, 0, WIDTH * HEIGHT * 4);
-        fillScreen((Vec3){75, 50, 48, 0});
+        memset((void *)framebuffer, 0, WIDTH * HEIGHT * 4);
+        linear_interpolate((Vec2){0, 0}, (Vec2){WIDTH, HEIGHT}, _stat_color, _end_color);
+        drawRectangle((Vec2){0, 0}, (Vec3){255, 255, 255, 200}, (Vec2){WIDTH, HEIGHT}, true);
     }
-    while(*s){
+
+    while(*s) {
+
         if (*s == '\x1b') {
+
             if (*(s + 1) == '[') {
+            
                 if (*(s + 2) == '2' && *(s + 3) == 'J') {
                     // Gérer l'effacement de l'écran
                     row = 0;
                     column = 0;
-                    memset(framebuffer, 0, WIDTH * HEIGHT * 4);
-                    fillScreen((Vec3){35, 38, 39, 0});
+                    memset((void *)framebuffer, 0, WIDTH * HEIGHT * 4);
+                    linear_interpolate((Vec2){0, 0}, (Vec2){WIDTH, HEIGHT}, _stat_color, _end_color);
                     s += 4; // Skip '2J'
                 } else if (*(s + 2) == 'H') {
                     // Repositionnez le curseur
@@ -204,39 +218,50 @@ void printf(char *s, ...) {
                     // Traitez les séquences de couleur ici
                     handle_color(&s);
                 }
+            
             } else {
                 // Traitez d'autres séquences d'échva_lstpement ici si nécessaire
                 s++;
             }
+
         } else if (*s == '%') {
+
             bool zero_padded = false;
             int width = 0;
             s++;
+
             if (*s == '0') {
                 zero_padded = true;
                 s++;
             }
+
             while (isdigit(*s)) {
                 width = width * 10 + (*s - '0');
                 s++;
             }
+
             handle_format(*s, &va_lst, zero_padded, width);
             s++;
+
         } else {
+
             putchar(*s++);
         }
     }
+
     va_end(va_lst);
-    set_color((Vec3){255, 255, 255, 255});
+    set_color((Vec3){0, 0, 0, 0});
 }
 
 
 void putchar(const char character) {
+
     if (character == '\n') {
         row = 0;
-        column += 16;
+        column += 18;
     } else {
-        drawChar(character, (Vec2){row, column}, ((_color.red << 16) | (_color.green << 8) | (_color.blue)));
+
+        drawChar(character, (Vec2){row, column}, _color);
         row += 8;
     }
 }

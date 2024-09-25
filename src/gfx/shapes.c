@@ -3,18 +3,20 @@
 #include "io.h"
 #include "gfx/framebuffer.h"
 #include "gfx/shapes.h"
+#include "gfx/utils.h"
+#include "gfx/effects.h"
 
 
 void bresenhamAlgorithm(Vec2 position, Vec3 color, uint16_t x, uint16_t y) {
 
-	drawPoint((Vec2){position.x+x, position.y+y}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x-x, position.y+y}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x+x, position.y-y}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x-x, position.y-y}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x+y, position.y+x}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x-y, position.y+x}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x+y, position.y-x}, (color.red << 16 | color.green << 8 | color.blue));
-    drawPoint((Vec2){position.x-y, position.y-x}, (color.red << 16 | color.green << 8 | color.blue));
+	drawPoint((Vec2){position.x+x, position.y+y}, color);
+    drawPoint((Vec2){position.x-x, position.y+y}, color);
+    drawPoint((Vec2){position.x+x, position.y-y}, color);
+    drawPoint((Vec2){position.x-x, position.y-y}, color);
+    drawPoint((Vec2){position.x+y, position.y+x}, color);
+    drawPoint((Vec2){position.x-y, position.y+x}, color);
+    drawPoint((Vec2){position.x+y, position.y-x}, color);
+    drawPoint((Vec2){position.x-y, position.y-x}, color);
 }
 
 void drawLine(Vec2 position, Vec3 color, Vec2 lenght) {
@@ -26,8 +28,7 @@ void drawLine(Vec2 position, Vec3 color, Vec2 lenght) {
 
         y = position.y + ((dy / dx) * (i - position.x));
         drawPoint(
-            (Vec2){i, y},
-            ((color.red << 16) | (color.green << 8) | (color.blue)));
+            (Vec2){i, y}, color);
     }
 }
 
@@ -88,7 +89,7 @@ void drawRectangle(Vec2 position, Vec3 color, Vec2 dimension, bool filled) {
         for (uint_fast16_t y = position.y; y < position.y + dimension.y; y++) {
             for (uint_fast16_t x = position.x; x < position.x + dimension.x; x++) {
 
-                drawPoint((Vec2){x, y}, ((color.red << 16) | (color.green << 8) | color.blue));
+                drawPoint((Vec2){x, y}, color);
             }
         }
     } else {
@@ -103,10 +104,10 @@ void drawRectangle(Vec2 position, Vec3 color, Vec2 dimension, bool filled) {
 
 void fillScreen(Vec3 color) {
 
-    for (uint_fast32_t i = 0; i < 1280; i++) {
-        for (uint_fast32_t j = 0; j < 800; j++) {
+    for (uint_fast32_t i = 0; i < WIDTH; i++) {
+        for (uint_fast32_t j = 0; j < HEIGHT; j++) {
 
-            drawPoint((Vec2){i, j}, ((color.red << 16) | (color.green << 8) | (color.blue)));
+            drawPoint((Vec2){i, j}, color);
         }
     }
 }

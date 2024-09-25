@@ -4,7 +4,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "acpi.h"
+#include "acpi/acpi.h"
 
 
 // PM_PROFILE macros

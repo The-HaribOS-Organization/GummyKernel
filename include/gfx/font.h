@@ -1,7 +1,7 @@
 #ifndef _FONT_
 #define _FONT_
 
-#define _FONT_PSF1
+#define _FONT_PSF2
 
 #include <stdint.h>
 
@@ -32,7 +32,7 @@ typedef struct {
 
 #endif
 
-// extern char *_binary_zap_ligh;
-extern uint8_t g_8x16_font[4096];
+extern uint8_t zap_ext_light18_psf[];
+extern const uint32_t zap_ext_light18_psf_len;
 
 #endif

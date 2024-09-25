@@ -29,24 +29,26 @@ void strcpy(char *source, char *destination) {
 }
 
 uint16_t strcmp(const char *first_string, const char *second_string) {
-    
-    uint16_t result = 0;
-    uint16_t len_first_string = strlen(first_string), len_second_string = strlen(second_string), len = 0;
 
-    if (len_first_string > len_second_string) {
-        len = len_first_string;
-    } else {
-        len = len_second_string;
+    while (*first_string && *first_string == *second_string) {
+
+        ++first_string;
+        ++second_string;
     }
 
-    for (uint16_t i = 0; i < len; i++) {
-        if (first_string[i] != second_string[i]) {
-            result++;
-            break;
-        }
+    return *first_string - *second_string;
+}
+
+uint16_t strncmp(const char *first_string, const char *second_string, uint16_t n) {
+
+    while (n > 0 && *first_string && *first_string == *second_string) {
+        ++first_string;
+        ++second_string;
+        n--;
     }
 
-    return result;
+    if (n == 0) return 0;
+    else return (*(uint16_t *)first_string - *(uint16_t *)second_string);
 }
 
 uint16_t strchr(char *string, char *research) {

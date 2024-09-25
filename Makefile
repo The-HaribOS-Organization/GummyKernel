@@ -32,6 +32,7 @@ clean:
 	rm -rv iso/boot/gummybin.bin
 
 run:
-	qemu-system-i386 -cdrom gummybin.iso -M smm=off -d int -audiodev pa,id=snd0 -machine pcspk-audiodev=snd0 -serial pty -rtc clock=host
+	qemu-system-x86_64 -machine q35 -cdrom gummybin.iso -M smm=off -d int -audiodev pa,id=snd0 -machine pcspk-audiodev=snd0 -serial pty
+# -machine q35
 
 .PHONY: gummykernel boot_file gummybin gummyiso clean run run-debug

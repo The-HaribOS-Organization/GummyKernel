@@ -2,7 +2,7 @@
 #define _SERIAL_
 
 #include <stdint.h>
-#include <stddef.h>
+#include <stdbool.h>
 
 
 #define SERIAL_COM1 0x3F8
@@ -24,5 +24,9 @@
 #define SERIAL_SCRATCH_REGISTER(x) (x+7)
 
 
+bool init_serial(uint16_t com_port);
+void send_string(uint16_t com_port, char *string);
+void send_char(uint16_t com_port, char character);
+char *recv_data(uint16_t com_port);
 
 #endif

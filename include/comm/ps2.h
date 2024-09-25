@@ -3,6 +3,7 @@
 
 
 #include <stdint.h>
+#include "io.h"
 
 
 #define READ_INTERNAL_RAM_0 0x20
@@ -26,5 +27,18 @@
 
 
 void init_ps2(void);
+
+
+static inline void disable_ps2_port(void) {
+
+    outb(COMMAND_REGISTER_PS2, DISABLE_FIRST_PS2);
+    outb(COMMAND_REGISTER_PS2, DISABLE_SECOND_PS2);
+}
+
+static inline void enable_ps2_port(void) {
+
+    outb(COMMAND_REGISTER_PS2, ENABLE_FIRST_PS2);
+    outb(COMMAND_REGISTER_PS2, ENABLE_SECOND_PS2);
+}
 
 #endif

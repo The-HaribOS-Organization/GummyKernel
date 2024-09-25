@@ -32,8 +32,9 @@ void init_ps2(void) {
 
     // Test du contrôleur.
     outb(COMMAND_REGISTER_PS2, TEST_PS2_CONTROLLER);
-    if (inb(DATA_PORT_PS2) != 0x55) printf("\x1b[255;120;107m[+]: Erreur lors du test.\n");
-    else if (inb(DATA_PORT_PS2) != 0xFC);
+    if (inb(DATA_PORT_PS2) != 0x55) {
+        printf("\x1b[255;120;107m[+]: Erreur lors du test.\n");
+    } else if (inb(DATA_PORT_PS2) != 0xFC) {}
 
     // Détermination du nombre de canaux.
     outb(COMMAND_REGISTER_PS2, READ_INTERNAL_RAM_0);

@@ -30,4 +30,3 @@ void encodeGDTEntry(uint8_t index, uint32_t base, uint32_t limit, uint8_t flags,
     descriptors[index].flags = (flags & 0xF0) | ((limit >> 16) & 0x0F);
     descriptors[index].access_byte = access_byte;
 }
-

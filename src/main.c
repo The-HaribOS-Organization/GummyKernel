@@ -22,6 +22,10 @@ Fonction main executant le code du kernel.
 #include "libc/mem.h"
 #include "acpi/fadt.h"
 #include "comm/ps2.h"
+#include "comm/serial.h"
+#include "comm/pci.h"
+#include "acpi/mcfg.h"
+#include "gfx/effects.h"
 
 
 #ifdef _MULTIBOOT_VERSION_1
@@ -34,7 +38,7 @@ Fonction main executant le code du kernel.
 
 
 uint8_t *rsdp;
-void *fadt_address;
+void *fadt_address, *mcfg_table;
 
 
 void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
@@ -47,7 +51,7 @@ void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
         set_framebuffer(
             fb,
             multiboot_struct->framebuffer_pitch);
-        fillScreen((Vec3){75, 50, 48, 0});
+        fillScreen(background_color);
     }
 #endif
 
@@ -64,11 +68,12 @@ void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
                 set_framebuffer(
                     fb,
                     fbuffer->common.framebuffer_pitch);
-                fillScreen((Vec3){75, 50, 48, 0});
+                fillScreen(background_color);
             } else if (tag->type == MULTIBOOT_TAG_TYPE_ACPI_NEW) {
 
                 struct multiboot_tag_new_acpi *acpi = (struct multiboot_tag_new_acpi *)tag;
                 rsdp = (uint8_t *)acpi->rsdp;
+
             } else if (tag->type == MULTIBOOT_TAG_TYPE_ACPI_OLD) {
 
                 struct multiboot_tag_old_acpi *acpi = (struct multiboot_tag_old_acpi *)tag;
@@ -76,44 +81,65 @@ void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
             }
         }
     }
+
 #endif
 
-    printf("\x1b[255;176;107mRSDP address: 0x%x\n", rsdp);
+    linear_interpolate((Vec2){0, 0}, (Vec2){WIDTH, HEIGHT}, (Vec3){255, 91, 91, 0}, (Vec3){255, 164, 91, 0});
+    drawRectangle((Vec2){0, 0}, (Vec3){255, 255, 255, 200}, (Vec2){WIDTH, HEIGHT}, true);
+
+    printf("[+]: RSDP address: 0x%x\n", rsdp);
     rsdp_t *rsdp_struct = get_rsdp_struct(rsdp);
 
-    if ((fadt_address = findDescriptor((uint32_t *)rsdp_struct->rsdt_address, "FACP")) == NULL) printf("\x1b[255;120;107m[+]: Erreur, descripteur null.\n");
-    else fadt_structure = (fadt_t *)fadt_address;
+    fadt_address = findDescriptor((uint32_t *)rsdp_struct->rsdt_address, "FACP");
+    if (fadt_address == NULL) {
+        printf("[+]: Erreur, descripteur null.\n");
+    } else {
+        fadt_structure = (fadt_t *)fadt_address;
+        printf("[+]: Descripteur trouve: %s\n", fadt_structure->h.signature);
+    }
+    if (!checksum_field(&fadt_structure->h)) printf("[+]: FADT non valide.\n");
 
-    if (!checksum_field(&fadt_structure->h)) printf("\x1b[255;120;107m[+]: FADT non valide.\n");
 
+    mcfg_table = findDescriptor((uint32_t *)rsdp_struct->rsdt_address, "MCFG");
+    if (mcfg_table == NULL) {
+        printf("[+]: Erreur, descripteur null.\n");
+    } else {
+        mcfg_structure = (mcfg_t *)mcfg_table;
+        printf("[+]: Descripteur trouve: %s\n", mcfg_structure->h.signature);
+    }
+    if (!checksum_field(&mcfg_structure->h)) printf("[+]: MCFG non valide.\n");
 
     if (!check_acpi_enable()) {
-        printf("\x1b[255;176;107m[+]: Activation de l'ACPI.\n");
+        printf("[+]: Activation de l'ACPI.\n");
         outb(fadt_structure->smi_cmd, fadt_structure->acpi_enable);
-        printf("\x1b[107;255;152m[+]: ACPI active.\n");
+        printf("[+]: ACPI active.\n");
     } else {
-        printf("\x1b[107;255;152m[+]: ACPI active.\n");
+        printf("[+]: ACPI active.\n");
     }
 
+    if (init_serial(SERIAL_COM2)) printf("[+]: Port serie initialise.\n");
+    else printf("[+]: Port serie non active.\n");
+
     initGDT();
-    printf("\x1b[241;202;255m[+]: GDT initialise\n");
+    printf("[+]: GDT initialise\n");
 
     initIDT();
-    printf("\x1b[241;202;255m[+]: IDT initialise\n");
+    printf("[+]: IDT initialise\n");
 
     initRTC();
-    printf("\x1b[241;202;255m[+]: RTC initialise\n");
+    printf("[+]: RTC initialise\n");
 
     init_timer(15);
-    printf("\x1b[241;202;255m[+]: PIT initialise\n");
+    printf("[+]: PIT initialise\n");
 
     init_ps2();
-
+    enable_ps2_port();
     init_kboard();
-    printf("\x1b[241;202;255m[+]: Clavier PS/2 initialise\n");
+    printf("[+]: Clavier PS/2 initialise\n");
+    pci_probe();
 
     datetime_t date = get_time();
-    printf("\x1b[220;255;235m[+]: Date du jour: %s %u %s %d\n", map_week(date.weekday), date.day_month, map_month(date.month), date.year + 2000);
+    printf("[+]: Date du jour: %s %u %s %d\n", map_week(date.weekday), date.day_month, map_month(date.month), date.year + 2000);
 
     for (;;) { asm("hlt"); }
 }

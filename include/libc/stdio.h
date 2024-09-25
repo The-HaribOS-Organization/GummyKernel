@@ -2,9 +2,6 @@
 #define _STDIO_
 
 
-#define WIDTH 1280
-#define HEIGHT 720
-
 #include <stdint.h>
 #include "gfx/utils.h"
 #include "libc/string.h"
