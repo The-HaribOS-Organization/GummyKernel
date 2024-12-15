@@ -8,8 +8,8 @@
 Vec2 compute_bezier_curve(Vec2 first_point, Vec2 second_point, Vec2 reference_point, float t, uint32_t radius) {
 
     return (Vec2){
-        ((1 - t) * (1 - t) * reference_point.x + 2 * (1 - t) * (second_point.x - radius) * t + t * t * (first_point.x - radius)),
-        ((1 - t) * (1 - t) * reference_point.y + 2 * (1 - t) * (second_point.y - radius) * t + t * t * (first_point.y - radius))};
+        ((1 - t) * (1 - t) * reference_point.x + 2 * (1 - t) * (second_point.x + radius) * t + t * t * (first_point.x + radius)),
+        ((1 - t) * (1 - t) * (reference_point.y + radius) + 2 * (1 - t) * (second_point.y - radius) * t + t * t * first_point.y)};
 }
 
 
@@ -25,6 +25,8 @@ void linear_interpolate(Vec2 dimension, Vec2 lenght, Vec3 start_color, Vec3 end_
                 (1 - (i / (dimension.y + lenght.y))) * (float)start_color.blue + (float)end_color.blue * i / (dimension.y + lenght.y), 0},
             (Vec2){(dimension.x + lenght.x), i});
 	}
+
+    return;
 }
 
 

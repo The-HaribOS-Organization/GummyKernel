@@ -10,7 +10,7 @@ Fonction main executant le code du kernel.
 #include "gfx/text.h"
 #include "gfx/framebuffer.h"
 #include "interrupt/interrupt.h"
-#include "libc/stdio.h"
+#include "klibc/stdio.h"
 #include "rtc.h"
 #include "interrupt/8259PIC.h"
 #include "pit.h"
@@ -19,13 +19,18 @@ Fonction main executant le code du kernel.
 #include "pc_speaker.h"
 #include "acpi/rsdp.h"
 #include "acpi/acpi.h"
-#include "libc/mem.h"
+#include "klibc/string.h"
 #include "acpi/fadt.h"
 #include "comm/ps2.h"
 #include "comm/serial.h"
 #include "comm/pci.h"
 #include "acpi/mcfg.h"
+#include "acpi/madt.h"
+#include "acpi/dsdt.h"
 #include "gfx/effects.h"
+#include "gfx/textinput.h"
+#include "gfx/frame.h"
+#include "mouse.h"
 
 
 #ifdef _MULTIBOOT_VERSION_1
@@ -38,7 +43,7 @@ Fonction main executant le code du kernel.
 
 
 uint8_t *rsdp;
-void *fadt_address, *mcfg_table;
+void *fadt_address, *mcfg_table, *madt_table;
 
 
 void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
@@ -84,8 +89,8 @@ void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
 
 #endif
 
-    linear_interpolate((Vec2){0, 0}, (Vec2){WIDTH, HEIGHT}, (Vec3){255, 91, 91, 0}, (Vec3){255, 164, 91, 0});
-    drawRectangle((Vec2){0, 0}, (Vec3){255, 255, 255, 200}, (Vec2){WIDTH, HEIGHT}, true);
+    linear_interpolate((Vec2){0, 0}, (Vec2){WIDTH, HEIGHT}, _stat_color, _end_color);
+    drawRectangle((Vec2){0, 0}, (Vec3){0, 0, 0, 200}, (Vec2){WIDTH, HEIGHT}, true);
 
     printf("[+]: RSDP address: 0x%x\n", rsdp);
     rsdp_t *rsdp_struct = get_rsdp_struct(rsdp);
@@ -108,6 +113,15 @@ void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
         printf("[+]: Descripteur trouve: %s\n", mcfg_structure->h.signature);
     }
     if (!checksum_field(&mcfg_structure->h)) printf("[+]: MCFG non valide.\n");
+
+    madt_table = findDescriptor((uint32_t *)rsdp_struct->rsdt_address, "APIC");
+    if (madt_table == NULL) {
+        printf("[+]: Erreur, descripteur null.\n");
+    } else {
+        madt_structure = (madt_t *)madt_table;
+        printf("[+]: Descripteur trouve: %s\n", madt_structure->h.signature);
+    }
+    if (!checksum_field(&madt_structure->h)) printf("[+]: MADT non valide.\n");
 
     if (!check_acpi_enable()) {
         printf("[+]: Activation de l'ACPI.\n");
@@ -135,11 +149,24 @@ void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
     init_ps2();
     enable_ps2_port();
     init_kboard();
+    // init_mouse();
+
     printf("[+]: Clavier PS/2 initialise\n");
     pci_probe();
 
     datetime_t date = get_time();
     printf("[+]: Date du jour: %s %u %s %d\n", map_week(date.weekday), date.day_month, map_month(date.month), date.year + 2000);
+
+    draw_frame(
+        (frame_t){
+            (Vec2){WIDTH, 80},
+            (Vec2){0, HEIGHT - 80},
+            (Margin){0, 10, 35, 35},
+            (Padding){0, 0, 0, 0},
+            (Border){0, 0, 0, 0},
+            (Vec3){0, 0, 0, 100},
+            (Vec3){0, 0, 0, 0},
+            35});
 
     for (;;) { asm("hlt"); }
 }

@@ -3,7 +3,7 @@
 
 
 #include <stdint.h>
-#include "libc/stdio.h"
+#include "klibc/stdio.h"
 
 
 typedef struct {

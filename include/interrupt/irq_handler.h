@@ -28,5 +28,6 @@ extern volatile isr_frame *irq_stack_state;
 
 extern void irq_0(void);
 extern void irq_1(void);
+extern void irq_12(void);
 
 #endif

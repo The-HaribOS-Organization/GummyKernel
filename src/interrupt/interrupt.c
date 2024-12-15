@@ -4,7 +4,7 @@
 #include "interrupt/irq_handler.h"
 #include "interrupt/8259PIC.h"
 #include "gfx/utils.h"
-#include "libc/stdio.h"
+#include "klibc/stdio.h"
 
 
 __attribute__((aligned(0x10)))
@@ -25,8 +25,9 @@ void initIDT(void) {
 
     initPIC();
     printf("\x1b[241;202;255m[+]: PIC initialise\n");
-    setIDTDescriptor(32, irq_0, INTERRUPT_GATE);
-    setIDTDescriptor(33, irq_1, INTERRUPT_GATE);
+    setIDTDescriptor(0x20, irq_0, INTERRUPT_GATE);
+    setIDTDescriptor(0x21, irq_1, INTERRUPT_GATE);
+    setIDTDescriptor(0x2C, irq_12, INTERRUPT_GATE);
 
 #ifdef USE_ASSEMBLY_ROUTINE_
     setIDT((uint32_t)&idt);

@@ -4,34 +4,38 @@
 #include "gfx/utils.h"
 #include "gfx/text.h"
 #include "gfx/framebuffer.h"
-#include "libc/stdio.h"
-#include "libc/string.h"
-#include "libc/mem.h"
+#include "klibc/stdio.h"
+#include "klibc/string.h"
 #include "gfx/shapes.h"
 
 
 static uint16_t row = 0;
 static uint16_t column = 0;
-static Vec3 _color = (Vec3){86, 66, 49, 0}, _stat_color = (Vec3){255, 91, 91, 0}, _end_color = (Vec3){255, 164, 91, 0};
+Vec3 _color = (Vec3){86, 66, 49, 0}, _stat_color = (Vec3){22, 225, 121, 0}, _end_color = (Vec3){56, 130, 226, 0};
 
 
 int isdigit(char c){
+
     return (c >= '0' && c <= '9');
 }
 
 int isAlpha(char c){
+
     return ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'));
 }
 
 int isAlphaNum(char c){
+
     return isdigit(c) || isAlpha(c);
 }
 
 void set_color(Vec3 color){
+
     _color = color;
 }
 
 void print_num(long val, int base, bool is_signed, bool zero_padded, int width) {
+
     char buf[32];
     char *p = buf + sizeof(buf) - 1;
     unsigned long abs_val = is_signed && val < 0 ? -val : val;
@@ -193,7 +197,6 @@ void printf(char *s, ...) {
     } else if (column == HEIGHT) {
         memset((void *)framebuffer, 0, WIDTH * HEIGHT * 4);
         linear_interpolate((Vec2){0, 0}, (Vec2){WIDTH, HEIGHT}, _stat_color, _end_color);
-        drawRectangle((Vec2){0, 0}, (Vec3){255, 255, 255, 200}, (Vec2){WIDTH, HEIGHT}, true);
     }
 
     while(*s) {

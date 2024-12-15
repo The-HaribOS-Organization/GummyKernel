@@ -4,7 +4,7 @@
 #include "interrupt/8259PIC.h"
 #include "interrupt/irq_handler.h"
 #include "io.h"
-#include "libc/stdio.h"
+#include "klibc/stdio.h"
 
 
 char *scan_code_set_1[] = {
@@ -41,6 +41,6 @@ void kboard_handler(isr_frame *frame) {
     if (inb(COMMAND_REGISTER_KBOARD) & 0x01) {
 
         uint8_t scan_code = inb(DATA_PORT);
-        printf("%s", scan_code_set_1[scan_code]);
+        if (scan_code < 0x80) printf("%s", scan_code_set_1[scan_code]);
     }
 }

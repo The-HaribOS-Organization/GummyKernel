@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "ssp.h"
-#include "libc/stdio.h"
+#include "klibc/stdio.h"
 
 
 uintptr_t __stack_chk_guard = STACK_CHK_GUARD;

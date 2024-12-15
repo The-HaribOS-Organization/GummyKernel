@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include "rtc.h"
 #include "io.h"
-#include "libc/stdio.h"
+#include "klibc/stdio.h"
 #include "interrupt/8259PIC.h"
 #include "acpi/fadt.h"
 

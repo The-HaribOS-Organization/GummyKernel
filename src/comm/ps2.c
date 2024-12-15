@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "comm/ps2.h"
 #include "acpi/fadt.h"
-#include "libc/stdio.h"
+#include "klibc/stdio.h"
 #include "io.h"
 #include "pit.h"
 
@@ -66,8 +66,4 @@ void init_ps2(void) {
     }
 
     printf("\x1b[241;202;255m[+]: PS/2 initialise.\n");
-}
-
-
-void detect_ps2_type(void) {
 }

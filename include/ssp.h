@@ -2,7 +2,7 @@
 #define _SSP_H
 
 #include <stdint.h>
-#include "libc/stdio.h"
+#include "klibc/stdio.h"
 
 
 #if UINT32_MAX == UINTPTR_MAX

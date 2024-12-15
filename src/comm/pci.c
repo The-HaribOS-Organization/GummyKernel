@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include "io.h"
 #include "comm/pci.h"
-#include "libc/stdio.h"
+#include "klibc/stdio.h"
 #include "acpi/mcfg.h"
 
 

@@ -4,7 +4,7 @@
 #include "interrupt/isr.h"
 #include "interrupt/irq_handler.h"
 #include "io.h"
-#include "libc/stdio.h"
+#include "klibc/stdio.h"
 
 
 volatile uint_fast32_t pit_count = 0;

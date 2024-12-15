@@ -2,7 +2,6 @@
 #include "interrupt/irq_handler.h"
 #include "interrupt/8259PIC.h"
 #include "interrupt/isr.h"
-#include "libc/stdio.h"
 
 
 // Cette fonction ne marche pas à la place on pass directement par les routines en assembleur.

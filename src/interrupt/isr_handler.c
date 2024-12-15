@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "interrupt/isr.h"
-#include "libc/stdio.h"
+#include "klibc/stdio.h"
 
 
 static char *isr_name[] = {

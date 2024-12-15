@@ -4,9 +4,10 @@
 
 #include <stdint.h>
 #include "gfx/utils.h"
-#include "libc/string.h"
+#include "klibc/string.h"
 
 
+extern Vec3 _color, _stat_color, _end_color;
 // Affichage de chaînes de caractères.
 void printf(char *s, ...);
 void putchar(const char character);

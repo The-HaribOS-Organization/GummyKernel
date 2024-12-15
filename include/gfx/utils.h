@@ -19,4 +19,14 @@ typedef struct {
     uint_fast32_t y;
 } Vec2;
 
+typedef struct {
+    uint16_t top;
+    uint16_t bottom;
+    uint16_t right;
+    uint16_t left;
+} Margin;
+
+typedef Margin Padding;
+typedef Margin Border;
+
 #endif

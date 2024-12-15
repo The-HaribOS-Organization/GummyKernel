@@ -5,6 +5,7 @@
 #include "gfx/shapes.h"
 #include "gfx/utils.h"
 #include "gfx/effects.h"
+#include "klibc/math.h"
 
 
 void bresenhamAlgorithm(Vec2 position, Vec3 color, uint16_t x, uint16_t y) {
@@ -17,6 +18,8 @@ void bresenhamAlgorithm(Vec2 position, Vec3 color, uint16_t x, uint16_t y) {
     drawPoint((Vec2){position.x-y, position.y+x}, color);
     drawPoint((Vec2){position.x+y, position.y-x}, color);
     drawPoint((Vec2){position.x-y, position.y-x}, color);
+
+    return;
 }
 
 void drawLine(Vec2 position, Vec3 color, Vec2 lenght) {
@@ -30,6 +33,8 @@ void drawLine(Vec2 position, Vec3 color, Vec2 lenght) {
         drawPoint(
             (Vec2){i, y}, color);
     }
+
+    return;
 }
 
 void drawCircle(Vec2 position, Vec3 color, uint16_t radius, bool filled) {
@@ -77,30 +82,45 @@ void drawCircle(Vec2 position, Vec3 color, uint16_t radius, bool filled) {
         	}
 		}
 	}
+
+    return;
 }
 
 void drawRectangle(Vec2 position, Vec3 color, Vec2 dimension, bool filled) {
 
-    uint_fast32_t dx = (dimension.x + position.x) - position.x;
-    uint_fast32_t dy = (dimension.y + position.y) - position.y;
+    if (filled == false) {
+        uint_fast32_t dx = dimension.x - position.x, dy = dimension.y - position.y;
 
-    if (filled == true) {
-
-        for (uint_fast16_t y = position.y; y < position.y + dimension.y; y++) {
-            for (uint_fast16_t x = position.x; x < position.x + dimension.x; x++) {
-
-                drawPoint((Vec2){x, y}, color);
-            }
-        }
-    } else {
-        
         drawLine((Vec2){position.x, position.y}, color, (Vec2){position.x + dx, position.y});
         drawLine((Vec2){position.x, position.y + dy}, color, (Vec2){position.x + dx, position.y + dy});
         drawLine((Vec2){position.x, position.y}, color, (Vec2){position.x, position.y + dy});
         drawLine((Vec2){position.x + dx, position.y}, color, (Vec2){position.x + dx, position.y + dy});
+
+    } else {
+
+        for (uint_fast32_t y = position.y; y < dimension.y; ++y) {
+            for (uint_fast32_t x = position.x; x < dimension.x; ++x) {
+
+                drawPoint((Vec2){x, y}, color);
+            }
+        }
     }
+
+    return;
 }
 
+void drawEllipse(Vec2 center_position, Vec2 radius, Vec3 color) {
+
+    for (float t = 0.00; t < 1.01; t += 0.01) {
+
+        drawPoint(
+            (Vec2){center_position.x + radius.x * (uint32_t)cosf(t),
+            center_position.y + radius.y * (uint32_t)sinf(t)},
+            color);
+    }
+    
+    return;
+}
 
 void fillScreen(Vec3 color) {
 
@@ -110,4 +130,6 @@ void fillScreen(Vec3 color) {
             drawPoint((Vec2){i, j}, color);
         }
     }
+
+    return;
 }
