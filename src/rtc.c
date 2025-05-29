@@ -5,6 +5,7 @@
 #include "klibc/stdio.h"
 #include "interrupt/8259PIC.h"
 #include "acpi/fadt.h"
+#include "comm/serial.h"
 
 
 /* Les différents tableaux de chaînes de
@@ -16,11 +17,11 @@ void initRTC(void) {
 
     if (!check_rtc_present()) {
 
-        printf("\x1b[255;120;107m[+]: Erreur, pas de RTC present sur la machine.\n");
+        send_string(SERIAL_COM1, "[+]: Erreur, pas de RTC present sur la machine.\n");
         return;
     } else {
 
-        printf("\x1b[107;255;152m[+]: RTC trouve sur la machine.\n");
+        send_string(SERIAL_COM1, "[+]: RTC trouve sur la machine.\n");
         __asm__ volatile("cli");
         outb(REGISTER_NUMBER, REGISTER_A_SELECTION);
         outb(RW_RTC, 0x20);

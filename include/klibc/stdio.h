@@ -7,6 +7,7 @@
 #include "klibc/string.h"
 
 
+extern uint16_t row, column;
 extern Vec3 _color, _stat_color, _end_color;
 // Affichage de chaînes de caractères.
 void printf(char *s, ...);

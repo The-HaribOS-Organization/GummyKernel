@@ -6,14 +6,12 @@
 #include "acpi/fadt.h"
 #include "acpi/mcfg.h"
 #include "acpi/madt.h"
-#include "acpi/dsdt.h"
 #include "klibc/stdio.h"
 
 
 fadt_t *fadt_structure;
 mcfg_t *mcfg_structure;
 madt_t *madt_structure;
-dsdt_t *dsdt_structure;
 
 void *findDescriptor(uint32_t *rsdt, char signature[4]) {
 

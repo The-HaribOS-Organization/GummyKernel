@@ -29,6 +29,12 @@
 #define COMMAND_REGISTER_KBOARD 0x64
 
 
+typedef struct {
+    int16_t mouse_x;
+    int16_t mouse_y;
+} mouse_position_t;
+
+
 void init_mouse(void);
 void mouse_handler(isr_frame *frame);
 

@@ -25,7 +25,7 @@
 
 
 bool init_serial(uint16_t com_port);
-void send_string(uint16_t com_port, char *string);
+void send_string(uint16_t com_port, char *string, ...);
 void send_char(uint16_t com_port, char character);
 char *recv_data(uint16_t com_port);
 

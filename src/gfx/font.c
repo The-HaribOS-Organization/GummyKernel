@@ -1,5 +1,7 @@
 #include <stdint.h>
+#include <stddef.h>
 #include "gfx/font.h"
+#include "files_format/psf.h"
 
 
 uint8_t zap_ext_light18_psf[] = {

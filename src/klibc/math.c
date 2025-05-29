@@ -367,8 +367,9 @@ long double asinhl(long double value) {
 
 double sin(double angle) {
 
-    double result = 1.0;
     angle = (PI * angle) / 180;
+
+    double result = angle;
     for (uint8_t i = 1; i < 21; i++)
         result += pow(-1, i) * (pow(angle, 2 * i + 1) / factorial(2 * i + 1));
 
@@ -377,8 +378,9 @@ double sin(double angle) {
 
 float sinf(float angle) {
 
-    float result = 1.0;
     angle = (PI * angle) / 180;
+
+    float result = angle;
     for (uint8_t i = 1; i < 21; i++)
         result += powf(-1, i) * (powf(angle, 2 * i + 1) / (float)factorial(2 * i + 1));
 
@@ -387,8 +389,9 @@ float sinf(float angle) {
 
 long double sinl(long double angle) {
 
-    long double result = 1.0;
     angle = (PI * angle) / 180;
+
+    long double result = angle;
     for (uint8_t i = 1; i < 21; i++)
         result += powl(-1, i) * (powl(angle, 2 * i + 1) / (long double)factorial(2 * i + 1));
 

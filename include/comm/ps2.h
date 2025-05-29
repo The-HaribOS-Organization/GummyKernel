@@ -35,9 +35,13 @@ static inline void disable_ps2_port(void) {
     outb(COMMAND_REGISTER_PS2, DISABLE_SECOND_PS2);
 }
 
-static inline void enable_ps2_port(void) {
+static inline void enable_first_ps2_port(void) {
 
     outb(COMMAND_REGISTER_PS2, ENABLE_FIRST_PS2);
+}
+
+static inline void enable_second_ps2_port(void) {
+
     outb(COMMAND_REGISTER_PS2, ENABLE_SECOND_PS2);
 }
 

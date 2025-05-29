@@ -106,18 +106,61 @@ void drawRectangle(Vec2 position, Vec3 color, Vec2 dimension, bool filled) {
         }
     }
 
+    //swap_buffer();
+
     return;
 }
 
 void drawEllipse(Vec2 center_position, Vec2 radius, Vec3 color) {
 
-    for (float t = 0.00; t < 1.01; t += 0.01) {
+    int32_t x = 0, y = radius.y, d1 = ((radius.y * radius.y) + 0.25 * radius.x * radius.x - radius.x * radius.x * radius.y);
+    int32_t dx = 2 * radius.y * radius.y * center_position.x, dy = 2 * radius.x * radius.x * center_position.y;
 
-        drawPoint(
-            (Vec2){center_position.x + radius.x * (uint32_t)cosf(t),
-            center_position.y + radius.y * (uint32_t)sinf(t)},
-            color);
+    while (dx < dy) {
+
+        drawPoint((Vec2){x + center_position.x, y + center_position.y}, color);
+        drawPoint((Vec2){-x + center_position.x, y + center_position.y}, color);
+        drawPoint((Vec2){x + center_position.x, -y + center_position.y}, color);
+        drawPoint((Vec2){-x + center_position.x, -y + center_position.y}, color);
+        
+        if (d1 < 0) {
+            
+            x++;
+            dx += 2 * radius.y * radius.y;
+            d1 += dx + (radius.y * radius.y);
+        } else {
+
+            x++;
+            y--;
+            dx += 2 * radius.y * radius.y;
+            dy -= 2 * radius.x * radius.x;
+            d1 += dx - dy + (radius.y * radius.y);
+        }
     }
+
+    int32_t d2 = (((radius.y * radius.y) * ((x + 0.5) * (x + 0.5))) + ((radius.x * radius.x) * ((y - 1) * (y - 1))) - (radius.x * radius.x * radius.y * radius.y));
+    while (y >= 0) {
+
+        drawPoint((Vec2){x + center_position.x, y + center_position.y}, color);
+        drawPoint((Vec2){-x + center_position.x, y + center_position.y}, color);
+        drawPoint((Vec2){x + center_position.x, -y + center_position.y}, color);
+        drawPoint((Vec2){-x + center_position.x, -y + center_position.y}, color);
+
+        if (d2 > 0) {
+
+            y--;
+            dy += -2 * radius.x * radius.x;
+            d2 += (radius.x * radius.x) - dy;
+        } else {
+
+            y--;
+            x++;
+            dx += 2 * radius.y * radius.y;
+            dy += -2 * radius.x * radius.x;
+            d2 += dx - dy + (radius.x * radius.x);
+        }
+    }
+
     
     return;
 }

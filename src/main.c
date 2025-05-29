@@ -26,11 +26,13 @@ Fonction main executant le code du kernel.
 #include "comm/pci.h"
 #include "acpi/mcfg.h"
 #include "acpi/madt.h"
-#include "acpi/dsdt.h"
 #include "gfx/effects.h"
 #include "gfx/textinput.h"
 #include "gfx/frame.h"
 #include "mouse.h"
+#include "klibc/math.h"
+#include "pmm.h"
+#include "page_table.h"
 
 
 #ifdef _MULTIBOOT_VERSION_1
@@ -89,84 +91,82 @@ void kernel_main(unsigned long multiboot_addr, uint_fast32_t signature) {
 
 #endif
 
-    linear_interpolate((Vec2){0, 0}, (Vec2){WIDTH, HEIGHT}, _stat_color, _end_color);
-    drawRectangle((Vec2){0, 0}, (Vec3){0, 0, 0, 200}, (Vec2){WIDTH, HEIGHT}, true);
+    if (init_serial(SERIAL_COM1) == true) printf("[+]: Port serie initialise.\n");
+    else printf("[+]: Port serie non active.\n");
 
-    printf("[+]: RSDP address: 0x%x\n", rsdp);
+    send_string(SERIAL_COM1, "[+]: RSDP address: 0x%x\n", rsdp);
     rsdp_t *rsdp_struct = get_rsdp_struct(rsdp);
 
     fadt_address = findDescriptor((uint32_t *)rsdp_struct->rsdt_address, "FACP");
     if (fadt_address == NULL) {
-        printf("[+]: Erreur, descripteur null.\n");
+        send_string(SERIAL_COM1, "[+]: Erreur, descripteur null.\n");
     } else {
         fadt_structure = (fadt_t *)fadt_address;
-        printf("[+]: Descripteur trouve: %s\n", fadt_structure->h.signature);
+        send_string(SERIAL_COM1, "[+]: Descripteur trouve: %s\n", fadt_structure->h.signature);
+        if (!checksum_field(&fadt_structure->h)) send_string(SERIAL_COM1, "[+]: FADT non valide.\n");
     }
-    if (!checksum_field(&fadt_structure->h)) printf("[+]: FADT non valide.\n");
 
 
     mcfg_table = findDescriptor((uint32_t *)rsdp_struct->rsdt_address, "MCFG");
     if (mcfg_table == NULL) {
-        printf("[+]: Erreur, descripteur null.\n");
+        send_string(SERIAL_COM1, "[+]: Erreur, descripteur null.\n");
     } else {
         mcfg_structure = (mcfg_t *)mcfg_table;
-        printf("[+]: Descripteur trouve: %s\n", mcfg_structure->h.signature);
+        send_string(SERIAL_COM1, "[+]: Descripteur trouve: %s\n", mcfg_structure->h.signature);
+        if (!checksum_field(&mcfg_structure->h)) send_string(SERIAL_COM1, "[+]: MCFG non valide.\n");
     }
-    if (!checksum_field(&mcfg_structure->h)) printf("[+]: MCFG non valide.\n");
 
     madt_table = findDescriptor((uint32_t *)rsdp_struct->rsdt_address, "APIC");
     if (madt_table == NULL) {
-        printf("[+]: Erreur, descripteur null.\n");
+        send_string(SERIAL_COM1, "[+]: Erreur, descripteur null.\n");
     } else {
         madt_structure = (madt_t *)madt_table;
-        printf("[+]: Descripteur trouve: %s\n", madt_structure->h.signature);
+        send_string(SERIAL_COM1, "[+]: Descripteur trouve: %s\n", madt_structure->h.signature);
+        if (!checksum_field(&madt_structure->h)) send_string(SERIAL_COM1, "[+]: MADT non valide.\n");
     }
-    if (!checksum_field(&madt_structure->h)) printf("[+]: MADT non valide.\n");
 
     if (!check_acpi_enable()) {
-        printf("[+]: Activation de l'ACPI.\n");
+        send_string(SERIAL_COM1, "[+]: Activation de l'ACPI.\n");
         outb(fadt_structure->smi_cmd, fadt_structure->acpi_enable);
-        printf("[+]: ACPI active.\n");
+        send_string(SERIAL_COM1, "[+]: ACPI active.\n");
     } else {
-        printf("[+]: ACPI active.\n");
+        send_string(SERIAL_COM1, "[+]: ACPI active.\n");
     }
 
-    if (init_serial(SERIAL_COM2)) printf("[+]: Port serie initialise.\n");
-    else printf("[+]: Port serie non active.\n");
+    init_k_heap();
 
     initGDT();
-    printf("[+]: GDT initialise\n");
+    send_string(SERIAL_COM1, "[+]: GDT initialise.\n");
 
     initIDT();
-    printf("[+]: IDT initialise\n");
+    send_string(SERIAL_COM1, "[+]: IDT Initialise.\n");
+
+    // init_paging();
+    // for (uint32_t i = 0; i < WIDTH * HEIGHT * 4; i += 0x1000) map_address((void *)framebuffer + i, (void *)virtual_framebuffer + i);
+    //printf("Pagin init.\n");
 
     initRTC();
-    printf("[+]: RTC initialise\n");
+    send_string(SERIAL_COM1, "[+]: RTC initialise.\n");
 
     init_timer(15);
-    printf("[+]: PIT initialise\n");
+    send_string(SERIAL_COM1, "[+]: PIT initialise.\n");
 
     init_ps2();
-    enable_ps2_port();
+    send_string(SERIAL_COM1, "[+]: Controleur PS/2 initialise.\n");
     init_kboard();
-    // init_mouse();
+    send_string(SERIAL_COM1, "[+]: Clavier initialise initialise.\n");
+    init_mouse();
+    send_string(SERIAL_COM1, "[+]: Souris PS/2 initialise.\n");
 
-    printf("[+]: Clavier PS/2 initialise\n");
     pci_probe();
+
 
     datetime_t date = get_time();
     printf("[+]: Date du jour: %s %u %s %d\n", map_week(date.weekday), date.day_month, map_month(date.month), date.year + 2000);
+    send_string(SERIAL_COM1, "[+]: Date du jour: %s %u %s %d\n", map_week(date.weekday), date.day_month, map_month(date.month), date.year + 2000);
+    printf("Bienvenu sur GummyKernel.\n");
+    printf("#/> ");
 
-    draw_frame(
-        (frame_t){
-            (Vec2){WIDTH, 80},
-            (Vec2){0, HEIGHT - 80},
-            (Margin){0, 10, 35, 35},
-            (Padding){0, 0, 0, 0},
-            (Border){0, 0, 0, 0},
-            (Vec3){0, 0, 0, 100},
-            (Vec3){0, 0, 0, 0},
-            35});
-
-    for (;;) { asm("hlt"); }
+    drawEllipse((Vec2){500, 250}, (Vec2){175, 150}, (Vec3){255, 255, 255, 0});
+    for (;;) asm("hlt");
 }

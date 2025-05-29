@@ -48,6 +48,6 @@ irq_12:
     add esp, 8
 
     mov al, 0x20
-    out 0x20, al
     out 0xA0, al
+    out 0x20, al
     iret

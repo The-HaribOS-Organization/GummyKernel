@@ -3,6 +3,7 @@
 #include <stddef.h>
 #include "io.h"
 #include "comm/pci.h"
+#include "comm/serial.h"
 #include "klibc/stdio.h"
 #include "acpi/mcfg.h"
 
@@ -122,9 +123,9 @@ void pci_probe(void) {
 
     for (uint16_t i = 0; i < device_number; i++) {
 
-        printf("[+]------->: Device class: %s\n", class_codes[pci_devices[i].infos.class_code]);
-        printf("[+]------->: Device subclass: %s\n", sub_class_code[pci_devices[i].infos.class_code][pci_devices[i].infos.subclass]);
-        printf("[+]------->: Device vendor ID: %d\n", pci_devices[i].infos.vendor_id);
-        printf("[+]------->: Device bus address: 0x%x\n", pci_devices[i].bus_address);
+        send_string(SERIAL_COM1, "[+]------->: Device class: %s\n", class_codes[pci_devices[i].infos.class_code]);
+        send_string(SERIAL_COM1, "[+]------->: Device subclass: %s\n", sub_class_code[pci_devices[i].infos.class_code][pci_devices[i].infos.subclass]);
+        send_string(SERIAL_COM1, "[+]------->: Device vendor ID: %d\n", pci_devices[i].infos.vendor_id);
+        send_string(SERIAL_COM1, "[+]------->: Device bus address: 0x%x\n", pci_devices[i].bus_address);
     }
 }

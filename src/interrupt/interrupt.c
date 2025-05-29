@@ -5,6 +5,7 @@
 #include "interrupt/8259PIC.h"
 #include "gfx/utils.h"
 #include "klibc/stdio.h"
+#include "comm/serial.h"
 
 
 __attribute__((aligned(0x10)))
@@ -24,7 +25,7 @@ void initIDT(void) {
         setIDTDescriptor(i, isr_array[i], INTERRUPT_GATE);
 
     initPIC();
-    printf("\x1b[241;202;255m[+]: PIC initialise\n");
+    send_string(SERIAL_COM1, "[+]: PIC initialise\n");
     setIDTDescriptor(0x20, irq_0, INTERRUPT_GATE);
     setIDTDescriptor(0x21, irq_1, INTERRUPT_GATE);
     setIDTDescriptor(0x2C, irq_12, INTERRUPT_GATE);

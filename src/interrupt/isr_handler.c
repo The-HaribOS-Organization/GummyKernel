@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include "interrupt/isr.h"
-#include "klibc/stdio.h"
+#include "comm/serial.h"
 
 
 static char *isr_name[] = {
@@ -15,7 +15,7 @@ static char *isr_name[] = {
 void isr_handler(isr_frame *frame) {
 
     if (frame->interrupt < 32) {
-        printf("\x1b[255;107;107mInterruption: %s\n", isr_name[frame->interrupt]);
+        send_string(SERIAL_COM1, "Interruption: %s\n", isr_name[frame->interrupt]);
         __asm__ volatile("cli; hlt");
     }
 }

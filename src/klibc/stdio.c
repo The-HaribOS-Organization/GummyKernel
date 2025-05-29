@@ -9,9 +9,8 @@
 #include "gfx/shapes.h"
 
 
-static uint16_t row = 0;
-static uint16_t column = 0;
-Vec3 _color = (Vec3){86, 66, 49, 0}, _stat_color = (Vec3){22, 225, 121, 0}, _end_color = (Vec3){56, 130, 226, 0};
+uint16_t row = 0, column = 0;
+Vec3 _color = (Vec3){86, 66, 49, 0}, _stat_color = (Vec3){66, 73, 58, 0}, _end_color = (Vec3){66, 73, 58, 0};
 
 
 int isdigit(char c){
@@ -193,10 +192,13 @@ void printf(char *s, ...) {
     va_start(va_lst, s);
 
     if (row == WIDTH) {
-        column++;
-    } else if (column == HEIGHT) {
-        memset((void *)framebuffer, 0, WIDTH * HEIGHT * 4);
-        linear_interpolate((Vec2){0, 0}, (Vec2){WIDTH, HEIGHT}, _stat_color, _end_color);
+        if (column == HEIGHT) scroll_windows();
+        else column += 18;
+    } else if (column == HEIGHT - 18) {
+        
+        scroll_windows();
+        column -= 18;
+        row = 0;
     }
 
     while(*s) {
@@ -206,16 +208,11 @@ void printf(char *s, ...) {
             if (*(s + 1) == '[') {
             
                 if (*(s + 2) == '2' && *(s + 3) == 'J') {
-                    // Gérer l'effacement de l'écran
-                    row = 0;
-                    column = 0;
-                    memset((void *)framebuffer, 0, WIDTH * HEIGHT * 4);
-                    linear_interpolate((Vec2){0, 0}, (Vec2){WIDTH, HEIGHT}, _stat_color, _end_color);
                     s += 4; // Skip '2J'
                 } else if (*(s + 2) == 'H') {
                     // Repositionnez le curseur
-                    row = 0;
-                    column = 0;
+                    //row = 0;
+                    //column = 0;
                     s += 3; // Skip 'H'
                 } else {
                     // Traitez les séquences de couleur ici
@@ -253,7 +250,7 @@ void printf(char *s, ...) {
     }
 
     va_end(va_lst);
-    set_color((Vec3){0, 0, 0, 0});
+    set_color((Vec3){255, 255, 255, 0});
 }
 
 

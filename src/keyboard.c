@@ -4,7 +4,9 @@
 #include "interrupt/8259PIC.h"
 #include "interrupt/irq_handler.h"
 #include "io.h"
+#include "gfx/framebuffer.h"
 #include "klibc/stdio.h"
+#include "comm/serial.h"
 
 
 char *scan_code_set_1[] = {
@@ -41,6 +43,19 @@ void kboard_handler(isr_frame *frame) {
     if (inb(COMMAND_REGISTER_KBOARD) & 0x01) {
 
         uint8_t scan_code = inb(DATA_PORT);
-        if (scan_code < 0x80) printf("%s", scan_code_set_1[scan_code]);
+        if (scan_code < 0x80) {
+            
+            if (scan_code == 0x1C) {
+
+                if (column == HEIGHT) scroll_windows();
+                column += 18;
+                row = 0;
+                printf("#/> ");
+                row += 1;
+            } else {
+                printf("%s", scan_code_set_1[scan_code]);
+                send_string(SERIAL_COM1, "%s", scan_code_set_1[scan_code]);
+            }
+        }
     }
 }
